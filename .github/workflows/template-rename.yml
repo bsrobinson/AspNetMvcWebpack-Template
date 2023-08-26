@@ -28,7 +28,7 @@ jobs:
 
           # Prepare variables
           NAME="${GITHUB_REPOSITORY##*/}"
-          SAFE_NAME=$(echo $NAME | sed 's/[^a-zA-Z0-9]//g' | tr '[:upper:]' '[:lower:]')
+          SAFE_NAME=$(echo $NAME | sed 's/-/_/g')
 
           # Find and replace in files
           find ./Template -type f -iname \*.cs -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
