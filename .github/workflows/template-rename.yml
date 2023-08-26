@@ -1,0 +1,76 @@
+#Based on https://stackoverflow.com/a/74097351/404459
+name: Template Rename
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  # Run cleaning process only if workflow is triggered by the template repository.
+  template-rename:
+    name: Template Rename
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: github.event.repository.name != 'AspNetMvcWebpack-Template'
+    steps:
+
+      # Check out current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v3
+
+      # Rename project
+      - name: Rename
+        run: |
+          export LC_CTYPE=C
+          export LANG=C
+
+          # Prepare variables
+          NAME="${GITHUB_REPOSITORY##*/}"
+          SAFE_NAME=$(echo $NAME | sed 's/[^a-zA-Z0-9]//g' | tr '[:upper:]' '[:lower:]')
+
+          # Find and replace in files
+          find ./Template -type f -iname \*.cs -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
+          find ./Template -type f -iname \*.ts -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
+          find ./Template -type f -iname \*.cshtml -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
+          find ./Template -type f -iname \*.json -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
+          find ./Template -type f -iname \*.csproj -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
+
+          find ./Template.Library -type f -iname \*.cs -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
+          find ./Template.Library -type f -iname \*.ts -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
+          find ./Template.Library -type f -iname \*.cshtml -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
+          find ./Template.Library -type f -iname \*.json -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
+          find ./Template.Library -type f -iname \*.csproj -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
+
+          sed -i "s/Template/$SAFE_NAME/g" ./*.js
+          sed -i "s/Template/$SAFE_NAME/g" ./*.json
+          sed -i "s/Template/$SAFE_NAME/g" ./*.sln
+          sed -i "s/Template/$SAFE_NAME/g" ./.vscode/*.json
+
+          # Rename files
+          mv Template.sln WebpageMonitor.sln
+          mv Template/Template.csproj Template/WebpageMonitor.csproj
+          mv Template.Library/Template.Library.csproj Template.Library/WebpageMonitor.Library.csproj
+
+          # Rename folders
+          mv ./Template ./WebpageMonitor
+          mv ./Template.Library ./WebpageMonitor.Library
+
+          # Remove this file
+          rm .github/workflows/template-rename.yml
+
+      # Commit modified files
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Template rename"
+
+      # Push changes
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: main
+          github_token: ${{ secrets.GITHUB_TOKEN }}
