@@ -49,13 +49,13 @@ jobs:
           sed -i "s/Template/$SAFE_NAME/g" ./.vscode/*.json
 
           # Rename files
-          mv Template.sln WebpageMonitor.sln
-          mv Template/Template.csproj Template/WebpageMonitor.csproj
-          mv Template.Library/Template.Library.csproj Template.Library/WebpageMonitor.Library.csproj
+          mv Template.sln $SAFE_NAME.sln
+          mv Template/Template.csproj Template/$SAFE_NAME.csproj
+          mv Template.Library/Template.Library.csproj Template.Library/$SAFE_NAME.Library.csproj
 
           # Rename folders
-          mv ./Template ./WebpageMonitor
-          mv ./Template.Library ./WebpageMonitor.Library
+          mv ./Template ./$SAFE_NAME
+          mv ./Template.Library ./$SAFE_NAME.Library
 
           # Remove this file
           rm .github/workflows/template-rename.yml
