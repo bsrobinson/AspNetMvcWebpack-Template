@@ -31,17 +31,17 @@ jobs:
           SAFE_NAME=$(echo $NAME | sed 's/-/_/g')
 
           # Find and replace in files
-          find ./Template -type f -iname \*.cs -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
-          find ./Template -type f -iname \*.ts -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
-          find ./Template -type f -iname \*.cshtml -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
-          find ./Template -type f -iname \*.json -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
-          find ./Template -type f -iname \*.csproj -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
+          find ./Template -type f -iname \*.cs -exec sed -i "s/Template/$SAFE_NAME/g" {} \;
+          find ./Template -type f -iname \*.ts -exec sed -i "s/Template/$SAFE_NAME/g" {} \;
+          find ./Template -type f -iname \*.cshtml -exec sed -i "s/Template/$SAFE_NAME/g" {} \;
+          find ./Template -type f -iname \*.json -exec sed -i "s/Template/$SAFE_NAME/g" {} \;
+          find ./Template -type f -iname \*.csproj -exec sed -i "s/Template/$SAFE_NAME/g" {} \;
 
-          find ./Template.Library -type f -iname \*.cs -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
-          find ./Template.Library -type f -iname \*.ts -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
-          find ./Template.Library -type f -iname \*.cshtml -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
-          find ./Template.Library -type f -iname \*.json -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
-          find ./Template.Library -type f -iname \*.csproj -exec sed -i 's/Template/$SAFE_NAME/g' {} \;
+          find ./Template.Library -type f -iname \*.cs -exec sed -i "s/Template/$SAFE_NAME/g" {} \;
+          find ./Template.Library -type f -iname \*.ts -exec sed -i "s/Template/$SAFE_NAME/g" {} \;
+          find ./Template.Library -type f -iname \*.cshtml -exec sed -i "s/Template/$SAFE_NAME/g" {} \;
+          find ./Template.Library -type f -iname \*.json -exec sed -i "s/Template/$SAFE_NAME/g" {} \;
+          find ./Template.Library -type f -iname \*.csproj -exec sed -i "s/Template/$SAFE_NAME/g" {} \;
 
           sed -i "s/Template/$SAFE_NAME/g" ./*.js
           sed -i "s/Template/$SAFE_NAME/g" ./*.json
