@@ -1,0 +1,16 @@
+﻿{
+	"Models": {
+		"Include": [
+			"./**/*.cs",
+			"../Template.Library/**/*.cs"
+		],
+		"Output": [
+			{
+				"Type": "TypeScript",
+				"Location": "./Scripts/Models/~csharpe.ts"
+			}
+		],
+		"NumericEnums": true,
+		"StringLiteralTypesInsteadOfEnums": false
+	}
+}

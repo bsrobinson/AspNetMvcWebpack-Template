@@ -1,0 +1,86 @@
+﻿@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostEnvironment
+@{
+    string titlePrefix = "";
+    if (ViewData.ContainsKey("Title") && !String.IsNullOrEmpty(ViewData["Title"]?.ToString()))
+    {
+        titlePrefix = ViewData["Title"]?.ToString() + " - ";
+    }
+
+    string controller = Context.Request.RouteValues["controller"]?.ToString() ?? "";
+    string view = System.IO.Path.GetFileNameWithoutExtension(ViewContext.View.Path);
+
+    string localCssPath = $"{HostEnvironment.WebRootPath}/.dist/css/{controller}/{view}.css";
+    bool localCssExists = System.IO.File.Exists(localCssPath);
+    string embededCss = localCssExists ? $"<style>{System.IO.File.ReadAllText(localCssPath)}</style>" : "";
+
+    string localJsPath = $"{HostEnvironment.WebRootPath}/.dist/js/{controller}/{view}.js";
+    bool localJsExists = System.IO.File.Exists(localJsPath);
+    string localJsContent = localJsExists ? System.IO.File.ReadAllText(localJsPath) : "";
+    int sourceMappingIndex = localJsContent.IndexOf("\n//# sourceMappingURL");
+    if (sourceMappingIndex >= 0)
+    {
+        localJsContent = localJsContent.Remove(sourceMappingIndex);
+    }
+    string localSourceMapPath = $"{HostEnvironment.WebRootPath}/.dist/js/{controller}/{view}.js.map";
+    bool localSourceMapExists = System.IO.File.Exists(localSourceMapPath);
+    if (localSourceMapExists)
+    {
+        localJsContent += $"\n//# sourceMappingURL=/.dist/js/{controller}/{view}.js.offset.map";
+    }
+
+    string embededJs = localJsExists ? $"<script>{localJsContent}</script>" : "";
+
+
+    string jsData = "null";
+    if (ViewData["jsData"] != null)
+    {
+        var settings = new Newtonsoft.Json.JsonSerializerSettings();
+        settings.ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
+        jsData = Newtonsoft.Json.JsonConvert.SerializeObject(ViewData["jsData"], settings);
+    }
+}
+<html>
+<head>
+
+    <title>
+        @titlePrefix
+        Template
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="/_images/admin/icons/.png">
+
+    <link rel="stylesheet" href="~/.dist/css/Site.css" asp-append-version="true" />
+    @Html.Raw(embededCss)
+
+    <script src="~/.dist/js/Site.js" asp-append-version="true"></script>
+    @Html.Raw(embededJs)
+    <script>
+        function init() {
+            let site = new Template.Template();
+            @Html.Raw(localJsExists ? $"page = new {controller}{view}.{controller}{view}(site, {jsData});" : "")
+        }
+        let page = null;
+    </script>
+
+</head>
+
+<body onload="init();">
+
+    <div id="header">
+        Template - @ViewData["Title"]
+    </div>
+
+    <ul id="nav">
+        <li><a href="/">Home</a></li>
+    </ul>
+
+    <div id="content" class="@(controller)@(view)">
+        
+        @RenderBody()
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <RootNamespace>Template</RootNamespace>
+        <nullable>enable</nullable>
+    </PropertyGroup>
+
+    <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition="'$(Configuration)' == 'Debug' And !Exists('../node_modules')">
+        <Exec Command="node --version" ContinueOnError="true">
+            <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+        </Exec>
+        <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+        <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+        <Exec Command="npm install" WorkingDirectory="../" />
+    </Target>
+
+    <PropertyGroup>
+        <WebpackCommand>npx webpack --env project=$(MSBuildProjectName)</WebpackCommand>
+        <WebpackCommand Condition="'$(_IsPublishing)' != ''">$(WebpackCommand) --mode production</WebpackCommand>
+    </PropertyGroup>
+    
+    <Target Name="WebpackBuild" BeforeTargets="Build">
+        <Exec Command="$(WebpackCommand)" WorkingDirectory="../" ContinueOnError="false" />
+    </Target>
+
+    <Target Name="WebpackClean" BeforeTargets="Clean">
+        <RemoveDir Directories=".\wwwroot\.dist\" />
+    </Target>
+
+    <ItemGroup>
+        <Content Update="**\*.ts" Watch="false" />
+        <Content Update="**\*.scss" Watch="false" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
+        <PackageReference Include="WckdRzr.Gaspar" Version="2.5.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Template.Library\Template.Library.csproj">
+        <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+        </ProjectReference>
+    </ItemGroup>
+
+</Project>

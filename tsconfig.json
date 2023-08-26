@@ -1,0 +1,10 @@
+﻿{
+	"compilerOptions": {
+		"strict": true,
+		"noImplicitAny": true,
+		"module": "es6",
+		"target": "es6",
+		"rootDir": "./",
+		"sourceMap": true
+	}
+}
