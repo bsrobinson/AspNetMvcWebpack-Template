@@ -1,3 +1,5 @@
+<!-- REMOVE_ON_RENAME-START -->
+
 # AspNetMvcWebpack-Template
 
 Base template for single stack web applications with a c# asp.net/mvc and mysql backend, and typescript/sass/razor frontend.  Using Webpack and Gaspar build tools.
@@ -60,6 +62,8 @@ If you need to do it manually:
   
   - `/Template.Library/`
 
+<!-- REMOVE_ON_RENAME-END -->
+
 ## Running the Application Locally
 
 Once you have created a new repository from this template you should run the template to make sure everything is working as you expect.
@@ -86,6 +90,8 @@ This will:
 - Trigger `dotnet watch` and `webpack watch` to monitor for changes and rebuild on the fly *(this step triggers the build step above)*.
 
 - Launch the application in your default browser *(triggered by dotnet watch)*
+
+<!-- REMOVE_ON_RENAME-START -->
 
 ### Using Visual Studio
 
@@ -130,3 +136,5 @@ dotnet publish
 ```
 
 When publishing, webpack will be run in production mode which will minify the javascript and css, and remove map files and debuger statements.
+
+<!-- REMOVE_ON_RENAME-END -->
