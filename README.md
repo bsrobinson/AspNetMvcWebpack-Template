@@ -4,7 +4,7 @@ Base template for single stack web applications with a c# asp.net/mvc and mysql 
 
 ## Structure
 
-This template follows the MVC pattern.  At the backend there are C# Models and Controllers (and other support files you need).  At the front end there are Razor Views each supported by a Typescript and SASS file.  There are also global Typescript and SASS files accessable to the whole application.
+<img title="" src="https://github.com/bsrobinson/AspNetMvcWebpack-Template/blob/main/readme-assets/dir-stucture.png?raw=true" alt="" width="341" align="right"> This template follows the MVC pattern.  At the backend there are C# Models and Controllers (and other support files you need).  At the front end there are Razor Views each supported by a Typescript and SASS file.  There are also global Typescript and SASS files accessable to the whole application.
 
 The end result is designed to be as compact and efficiant as possible on the front end, minimising the number of HTTP calls, and ensureing the files downloaded are as minimal as possible.
 
@@ -32,9 +32,7 @@ This is the contents of the Template, with config and minor support files remove
     
     - `/Template/Views/Home/` contains the files for the HomeController.  For every page should have a `.cshtml` file (as usual) plus a`.ts`and`.scss` file.  The three files will be reassembled into the final html delivered to the browser.
       
-      You can reference any other typescript in these `.ts` files
-      
-      , this will be packaged onto that page, unless it is already provided via `Site.ts`.
+      You can reference any other typescript in these `.ts` files, this will be packaged onto that page, unless it is already provided via `Site.ts`.
     
     - `/Template/Views/Shared/_Layout.cshtml` is the standard template for other razor files.  In here is all the code that combines js and css into the final file
   
@@ -42,11 +40,11 @@ This is the contents of the Template, with config and minor support files remove
 
 - `/Template.Library` is for shared code shared between projects (for when you add a second project).  For now it contains the Data Access Layer models for mysql. 
 
-<img src="file:///Users/ben/Library/Application%20Support/marktext/images/2023-08-20-17-45-14-image.png" title="" alt="" width="294">
-
 ## Rename the template
 
-Before building your application you will need to replace all the references to 'Template' with the name of your app.  To do this:
+If you create a repository directly from this template in GitHub, or check in a copy of this to GitHub, everything will be automatically renamed for you thanks to the github workflow.  You need to wait a couple of minutes for the action to run.
+
+If you need to do it manually:
 
 - Use Find and Replace to search within the files for 'Template' and replace with your project name; without spaces
 
@@ -58,9 +56,9 @@ Before building your application you will need to replace all the references to 
   
   - `/Template.Library/Template.Library.csproj`
   
-  - `/Template`
+  - `/Template/`
   
-  - `/Template.Library`
+  - `/Template.Library/`
 
 ## Running the Application Locally
 
