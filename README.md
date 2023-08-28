@@ -1,4 +1,4 @@
-<!-- REMOVE_ON_RENAME-START -->
+<!-- REMOVE_ON_RENAME_START -->
 
 # AspNetMvcWebpack-Template
 
@@ -62,7 +62,7 @@ If you need to do it manually:
   
   - `/Template.Library/`
 
-<!-- REMOVE_ON_RENAME-END -->
+<!-- REMOVE_ON_RENAME_END -->
 
 ## Running the Application Locally
 
@@ -91,7 +91,7 @@ This will:
 
 - Launch the application in your default browser *(triggered by dotnet watch)*
 
-<!-- REMOVE_ON_RENAME-START -->
+<!-- REMOVE_ON_RENAME_START -->
 
 ### Using Visual Studio
 
@@ -137,4 +137,4 @@ dotnet publish
 
 When publishing, webpack will be run in production mode which will minify the javascript and css, and remove map files and debuger statements.
 
-<!-- REMOVE_ON_RENAME-END -->
+<!-- REMOVE_ON_RENAME_END -->

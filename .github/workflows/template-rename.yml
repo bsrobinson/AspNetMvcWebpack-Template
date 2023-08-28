@@ -57,6 +57,10 @@ jobs:
           mv ./Template ./$SAFE_NAME
           mv ./Template.Library ./$SAFE_NAME.Library
 
+          # Update README
+          sed -i '/REMOVE_ON_RENAME_START/,/REMOVE_ON_RENAME_END/d' README.md
+          sed -i "1s/^/# $NAME\nBased on https:\/\/github.com\/bsrobinson\/AspNetMvcWebpack-Template\/\n/" ./README.md
+
           # Remove this file
           rm .github/workflows/template-rename.yml
 
