@@ -48,10 +48,13 @@ namespace Template
             );
             */
 
-            //string? connectionString = Configuration.GetConnectionString("mySqlConnection");
-            //services.AddDbContext<MySqlContext>(
-            //    OptionsServiceCollectionExtensions => OptionsServiceCollectionExtensions.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
-            //);
+            string? connectionString = Configuration.GetConnectionString("MySql");
+            if (connectionString != null)
+            {
+                services.AddDbContext<MySqlContext>(
+                   OptionsServiceCollectionExtensions => OptionsServiceCollectionExtensions.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+                );
+            }
 
             services.AddControllersWithViews();
         }

@@ -3,6 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# Template specific
+.dist/
+secrets.json
+
 # User-specific files
 *.rsuser
 *.suo
@@ -31,7 +35,6 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
-.dist/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

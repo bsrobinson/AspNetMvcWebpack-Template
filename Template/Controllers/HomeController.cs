@@ -15,7 +15,11 @@ namespace Template.Controllers
         private readonly IConfiguration config;
         private readonly ILogger<HomeController> log;
 
-        public HomeController(/*MySqlContext context,*/ IConfiguration configuration, ILogger<HomeController> logger)
+        public HomeController(
+            //MySqlContext context,
+            IConfiguration configuration,
+            ILogger<HomeController> logger
+            )
         {
             //db = context;
             config = configuration;

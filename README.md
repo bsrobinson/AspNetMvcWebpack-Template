@@ -127,6 +127,27 @@ You can run the following commands from the root of the template:
   `dotnet clean` cleans webpack resources.
   `dotnet publish` builds webpack resources for production.
 
+## Adding MySql
+
+The template is ready to connect to MySql, simply:
+
+- Add a new file in the project root (alongside appsettings.json) called `secrets.json` and add your connection string into that file:
+  
+  ```json
+  {
+    "ConnectionStrings": {
+      "MySql": "server=1.1.1.1;userid=XX;pwd=XX;port=3306;database=DB"
+    }
+  }
+  ```
+  
+  *secrets.json is included in the .gitignore file, so will not be checked in, and can safely be used for other passwords and access tokens.* 
+
+- Add the database context to your controllers; in the existing `HomeController.cs` file, you will find the code commented out ready to use.  Uncomment lines 14, 19 and 24.
+
+- Finally add your tables as classes with the library `DAL` folder (`Table.cs` is an example that will need to be deleted) and add your tables to `~MySqlContext.cs`
+  *I need to find a way to automate this*...
+
 ## Publishing the Application
 
 To publish the application, run the following from the command line:
