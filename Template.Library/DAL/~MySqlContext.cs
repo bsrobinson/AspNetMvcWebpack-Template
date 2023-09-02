@@ -17,7 +17,7 @@ namespace Template.Library.DAL
             //modelBuilder.Entity<MessageGroupContact>().HasKey(c => new { c.groupId, c.contactId });
 		}
 
-        //Tables
+		//Tables
 		public virtual DbSet<Table> Tables { get; set; }
 	}
 }

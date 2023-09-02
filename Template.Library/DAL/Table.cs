@@ -10,6 +10,6 @@ namespace Template.Library.DAL
         [Key]
         public uint Id { get; set; }
         [MaxLength(100)]
-        public string Str { get; set; }
+        public required string Str { get; set; }
     }
 }

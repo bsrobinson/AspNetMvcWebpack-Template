@@ -34,8 +34,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
-        <PackageReference Include="WckdRzr.Gaspar" Version="2.5.1" />
+        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
+        <PackageReference Include="WckdRzr.Gaspar" Version="2.5.6" />
     </ItemGroup>
 
     <ItemGroup>
