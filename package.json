@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "node watch.js"
+    "start": "node watch.js",
+    "update-template": "node updateTemplate.js"
   },
   "devDependencies": {
     "glob": "^10.2.6",

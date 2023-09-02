@@ -159,3 +159,15 @@ dotnet publish
 When publishing, webpack will be run in production mode which will minify the javascript and css, and remove map files and debuger statements.
 
 <!-- REMOVE_ON_RENAME_END -->
+
+## Updating from the Template
+
+If this template is updated, you can copy the changes into your application by running:
+
+```node
+npm run update-template
+```
+
+This process is still quite manual, but the script hopes to make it as easy as possible.  You should only run it in a souce controlled environment, as the changes will be made directly to your project, and will need careful manual review.
+
+The first time you run the script you'll be asked when to update from; which will default to your first commit.  The date last updated will be saved to a file; commit this file to make future updates simpler.
