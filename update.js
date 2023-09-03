@@ -175,6 +175,8 @@ function applyChanges(date, solutionName, folderName, cb) {
 					fs.writeFileSync('./update.js', templateFileContents, utf8);	
 					console.log(`\nUpdate Template script has been updated.`);
 					console.log(`Commit that change and run again.\n`);
+
+					deleteTempFolder(folderName);
 					process.exit();
 				}
 
