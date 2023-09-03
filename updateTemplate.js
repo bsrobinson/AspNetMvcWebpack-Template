@@ -1,4 +1,8 @@
-﻿const fs = require('fs')
+﻿//
+// Script to check for and apply changes from the orginal template
+//
+
+const fs = require('fs')
 const path = require('path')
 const https = require("https");
 const exec = require('child_process').exec;
@@ -162,13 +166,13 @@ function applyChanges(date, solutionName, folderName, cb) {
 			
 			let diff = parseGitDiff(response);
 
-			if (diff.files.find(f => f.path == 'updateTemplate.js') != null) {
+			if (diff.files.find(f => f.path == 'update.js') != null) {
 				
-				let templateFileContents = fs.readFileSync(path.join(__dirname, `./${folderName}/updateTemplate.js`), utf8);
-				let solutionFileContents = fs.readFileSync(path.join(__dirname, `./updateTemplate.js`), utf8);
+				let templateFileContents = fs.readFileSync(path.join(__dirname, `./${folderName}/update.js`), utf8);
+				let solutionFileContents = fs.readFileSync(path.join(__dirname, `./update.js`), utf8);
 
 				if (templateFileContents != solutionFileContents) {
-					fs.writeFileSync('./updateTemplate.js', templateFileContents, utf8);	
+					fs.writeFileSync('./update.js', templateFileContents, utf8);	
 					console.log(`\nUpdate Template script has been updated.`);
 					console.log(`Commit that change and run again.\n`);
 					process.exit();
@@ -176,11 +180,14 @@ function applyChanges(date, solutionName, folderName, cb) {
 
 			}
 
-			diff.files.filter(f => f.path != 'README.md').forEach(file => {
+			let filesToIgnore = [ 'update.js', 'README.md' ]
+			diff.files.filter(f => !filesToIgnore.includes(f.path)).forEach(file => {
 
 				let templatePath = file.path;
-				let solutionPath = path.join(__dirname, templatePath.replace(`Template/`, `${solutionName}/`));
-				let shouldReplaceInFile = ['.cs', '.ts', '.cshtml', '.json', '.csproj', '.js', '.sln'].indexOf(path.extname(templatePath)) >= 0
+				let solutionPath = path.join(__dirname, templatePath.replace(/Template/g, `${solutionName}`));
+				let extension = path.extname(templatePath);
+
+				let shouldReplaceInFile = ['.cs', '.ts', '.cshtml', '.json', '.csproj', '.js', '.sln'].indexOf(extension) >= 0
 				let templateFileContents = fs.readFileSync(path.join(__dirname, `./${folderName}/${templatePath}`), utf8);
 
 				let unchangedLinesRemainUnchanged = true;
