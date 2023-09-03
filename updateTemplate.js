@@ -165,10 +165,13 @@ function applyChanges(date, solutionName, folderName, cb) {
 			if (diff.files.find(f => f.path == 'updateTemplate.js') != null) {
 				
 				let templateFileContents = fs.readFileSync(path.join(__dirname, `./${folderName}/updateTemplate.js`), utf8);
-				fs.writeFileSync('./updateTemplate.js', templateFileContents, utf8);
+				let solutionFileContents = fs.readFileSync(path.join(__dirname, `./updateTemplate.js`), utf8);
 
-				console.log(`\nUpdate Template script has been updated.`);
-				console.log(`Commit that change and run again.\n`);
+				if (templateFileContents != solutionFileContents) {
+					fs.writeFileSync('./updateTemplate.js', templateFileContents, utf8);	
+					console.log(`\nUpdate Template script has been updated.`);
+					console.log(`Commit that change and run again.\n`);
+				}
 
 				process.exit();
 			}
