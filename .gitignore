@@ -4,7 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
 # Template specific
-.dist/
+**/wwwroot/dist/
 secrets.json
 
 # User-specific files

@@ -34,7 +34,7 @@ if (!fs.existsSync(`./${project}/`)) {
 			return obj;
 		},
 		output: {
-			path: path.resolve(__dirname, `${project}/wwwroot/.dist/js`),
+			path: path.resolve(__dirname, `${project}/wwwroot/dist/js`),
 			enabledLibraryTypes: [ 'window' ],
 		},
 		resolve: {
@@ -68,7 +68,7 @@ if (!fs.existsSync(`./${project}/`)) {
 			return obj;
 		},
 		output: {
-			path: path.resolve(__dirname, `${project}/wwwroot/.dist/css/~js`),
+			path: path.resolve(__dirname, `${project}/wwwroot/dist/css/~js`),
 		},
 		module: {
 			rules: [{
@@ -118,7 +118,7 @@ function watchRunFeedback(comp) {
 }
 
 function offsetSourceMaps() {
-	glob.sync(`./${project}/wwwroot/.dist/js/*/*.js.map`).forEach(mapPath => {
+	glob.sync(`./${project}/wwwroot/dist/js/*/*.js.map`).forEach(mapPath => {
 		let rawSourceMap = fs.readFileSync(mapPath, 'utf-8');
 		sourceMap.SourceMapConsumer.with(rawSourceMap, null, consumer => {
 			var fileName = path.parse(mapPath).name;

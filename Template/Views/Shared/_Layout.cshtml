@@ -9,11 +9,11 @@
     string controller = Context.Request.RouteValues["controller"]?.ToString() ?? "";
     string view = System.IO.Path.GetFileNameWithoutExtension(ViewContext.View.Path);
 
-    string localCssPath = $"{HostEnvironment.WebRootPath}/.dist/css/{controller}/{view}.css";
+    string localCssPath = $"{HostEnvironment.WebRootPath}/dist/css/{controller}/{view}.css";
     bool localCssExists = System.IO.File.Exists(localCssPath);
     string embededCss = localCssExists ? $"<style>{System.IO.File.ReadAllText(localCssPath)}</style>" : "";
 
-    string localJsPath = $"{HostEnvironment.WebRootPath}/.dist/js/{controller}/{view}.js";
+    string localJsPath = $"{HostEnvironment.WebRootPath}/dist/js/{controller}/{view}.js";
     bool localJsExists = System.IO.File.Exists(localJsPath);
     string localJsContent = localJsExists ? System.IO.File.ReadAllText(localJsPath) : "";
     int sourceMappingIndex = localJsContent.IndexOf("\n//# sourceMappingURL");
@@ -21,11 +21,11 @@
     {
         localJsContent = localJsContent.Remove(sourceMappingIndex);
     }
-    string localSourceMapPath = $"{HostEnvironment.WebRootPath}/.dist/js/{controller}/{view}.js.map";
+    string localSourceMapPath = $"{HostEnvironment.WebRootPath}/dist/js/{controller}/{view}.js.map";
     bool localSourceMapExists = System.IO.File.Exists(localSourceMapPath);
     if (localSourceMapExists)
     {
-        localJsContent += $"\n//# sourceMappingURL=/.dist/js/{controller}/{view}.js.offset.map";
+        localJsContent += $"\n//# sourceMappingURL=/dist/js/{controller}/{view}.js.offset.map";
     }
 
     string embededJs = localJsExists ? $"<script>{localJsContent}</script>" : "";
@@ -51,10 +51,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="apple-touch-icon" href="/_images/admin/icons/.png">
 
-    <link rel="stylesheet" href="~/.dist/css/Site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/dist/css/Site.css" asp-append-version="true" />
     @Html.Raw(embededCss)
 
-    <script src="~/.dist/js/Site.js" asp-append-version="true"></script>
+    <script src="~/dist/js/Site.js" asp-append-version="true"></script>
     @Html.Raw(embededJs)
     <script>
         function init() {

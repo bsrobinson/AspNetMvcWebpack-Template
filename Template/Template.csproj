@@ -25,7 +25,7 @@
     </Target>
 
     <Target Name="WebpackClean" BeforeTargets="Clean">
-        <RemoveDir Directories=".\wwwroot\.dist\" />
+        <RemoveDir Directories=".\wwwroot\dist\" />
     </Target>
 
     <ItemGroup>
