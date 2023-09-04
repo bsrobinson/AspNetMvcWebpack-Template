@@ -69,7 +69,7 @@
 <body onload="init();">
 
     <div id="header">
-        Template - @ViewData["Title"]
+        @Html.Raw(string.Join(" &#8211; ", (titlePrefix + "Template").Split(" - ").Reverse()))
     </div>
 
     <ul id="nav">
