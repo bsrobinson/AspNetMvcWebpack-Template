@@ -185,8 +185,8 @@ function applyChanges(date, solutionName, folderName, cb) {
 			let filesToIgnore = [ 'update.js', 'README.md' ]
 			diff.files.filter(f => !filesToIgnore.includes(f.path)).forEach(file => {
 
-				let templatePath = file.path;
-				let solutionPath = path.join(__dirname, templatePath.replace(/Template/g, `${solutionName}`));
+				let templatePath = file.path || file.pathAfter;
+				let solutionPath = path.join(__dirname, (file.path || file.pathBefore).replace(/Template/g, `${solutionName}`));
 				let extension = path.extname(templatePath);
 
 				if (file.type == 'DeletedFile') {
@@ -238,6 +238,13 @@ function applyChanges(date, solutionName, folderName, cb) {
 						fs.writeFileSync(solutionPath, templateFileContents, utf8);
 
 					}
+
+					if (file.type == 'RenamedFile') {
+						let oldPath = path.join(__dirname, file.pathBefore.replace(/Template/g, `${solutionName}`));
+						let newPath = path.join(__dirname, file.pathAfter.replace(/Template/g, `${solutionName}`));
+						fs.renameSync(oldPath, newPath);
+					}
+
 				}
 			});
 			cb();
