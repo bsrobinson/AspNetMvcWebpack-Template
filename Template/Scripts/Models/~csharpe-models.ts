@@ -9,6 +9,13 @@
 //** full configuration in: ../../gaspar.config.json
 //**
 
+//File: ../../Controllers/APIDemoController.cs
+
+export interface DemoObject {
+    start: number;
+    count: number;
+}
+
 //File: ../../../Template.Library/DAL/Table.cs
 
 export interface Table {

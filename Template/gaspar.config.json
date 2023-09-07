@@ -7,10 +7,21 @@
 		"Output": [
 			{
 				"Type": "TypeScript",
-				"Location": "./Scripts/Models/~csharpe.ts"
+				"Location": "./Scripts/Models/~csharpe-models.ts"
 			}
 		],
 		"NumericEnums": true,
 		"StringLiteralTypesInsteadOfEnums": false
+	},
+	"Controllers": {
+		"Output": [
+			{
+				"Type": "TypeScript",
+				"Location": "./Scripts/Services/~csharpe-services.ts",
+				"ModelPath": "../Models/~csharpe-models",
+				"ErrorHandlerPath": "./service-error-handler"
+			}
+		],
+		"ServiceName": "Template"
 	}
 }

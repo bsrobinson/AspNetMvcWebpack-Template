@@ -4,7 +4,7 @@ using WCKDRZR.Gaspar;
 
 namespace Template.Library.DAL
 {
-    [ExportFor(GasparType.FrontEnd)]
+    [ExportFor(GasparType.TypeScript)]
     public class Table
     {
         [Key]

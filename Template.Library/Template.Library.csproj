@@ -8,9 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DAL\" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
     <PackageReference Include="WckdRzr.Gaspar" Version="2.5.6" />
