@@ -189,9 +189,6 @@ function applyChanges(date, solutionName, folderName, cb) {
 				let solutionPath = path.join(__dirname, templatePath.replace(/Template/g, `${solutionName}`));
 				let extension = path.extname(templatePath);
 
-				let shouldReplaceInFile = ['.cs', '.ts', '.cshtml', '.json', '.csproj', '.js', '.sln'].indexOf(extension) >= 0
-				let templateFileContents = fs.readFileSync(path.join(__dirname, `./${folderName}/${templatePath}`), utf8);
-
 				if (file.type == 'DeletedFile') {
 
 					fs.unlinkSync(solutionPath);
@@ -214,6 +211,9 @@ function applyChanges(date, solutionName, folderName, cb) {
 						});
 					}
 
+					let shouldReplaceInFile = ['.cs', '.ts', '.cshtml', '.json', '.csproj', '.js', '.sln'].indexOf(extension) >= 0
+					let templateFileContents = fs.readFileSync(path.join(__dirname, `./${folderName}/${templatePath}`), utf8);
+					
 					unchangedLinesRemainUnchanged = false; //delete this line when code written below
 					if (unchangedLinesRemainUnchanged) {
 						
