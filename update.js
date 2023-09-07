@@ -192,44 +192,52 @@ function applyChanges(date, solutionName, folderName, cb) {
 				let shouldReplaceInFile = ['.cs', '.ts', '.cshtml', '.json', '.csproj', '.js', '.sln'].indexOf(extension) >= 0
 				let templateFileContents = fs.readFileSync(path.join(__dirname, `./${folderName}/${templatePath}`), utf8);
 
-				let unchangedLinesRemainUnchanged = true;
-				if (fs.existsSync(solutionPath)) {
-					
-					let solutionFileContents = fs.readFileSync(solutionPath, utf8);
-					let solutionFileLines = solutionFileContents.split('\n');
-	
-					file.chunks.forEach(chunk => {
-						chunk.changes.filter(c => c.type == 'UnchangedLine').forEach(change => {
-							if (change.content != solutionFileLines[change.lineBefore -1]) {
-								unchangedLinesRemainUnchanged = false;
-							}
+				if (file.type == 'DeletedFile') {
+
+					fs.unlinkSync(solutionPath);
+
+				} 
+				else {
+
+					let unchangedLinesRemainUnchanged = true;
+					if (fs.existsSync(solutionPath)) {
+						
+						let solutionFileContents = fs.readFileSync(solutionPath, utf8);
+						let solutionFileLines = solutionFileContents.split('\n');
+		
+						file.chunks.forEach(chunk => {
+							chunk.changes.filter(c => c.type == 'UnchangedLine').forEach(change => {
+								if (change.content != solutionFileLines[change.lineBefore -1]) {
+									unchangedLinesRemainUnchanged = false;
+								}
+							});
 						});
-					});
-				}
-
-				unchangedLinesRemainUnchanged = false; //delete this line when code written below
-				if (unchangedLinesRemainUnchanged) {
-					
-					file.chunks.forEach(chunk => {
-						chunk.changes.filter(c => c.type != 'UnchangedLine').forEach(change => {
-
-							//TODO
-							//apply line change to file in solution
-								//!! rename Template refs
-
-						});
-					});
-					
-				} else {
-
-					// copy whole contents of file (to allow for manual merge)
-					if (shouldReplaceInFile){
-						templateFileContents = templateFileContents.replace(/Template/g, solutionName);
 					}
 
-					fs.mkdirSync(path.dirname(solutionPath), { recursive: true });
-					fs.writeFileSync(solutionPath, templateFileContents, utf8);
-				
+					unchangedLinesRemainUnchanged = false; //delete this line when code written below
+					if (unchangedLinesRemainUnchanged) {
+						
+						file.chunks.forEach(chunk => {
+							chunk.changes.filter(c => c.type != 'UnchangedLine').forEach(change => {
+
+								//TODO
+								//apply line change to file in solution
+									//!! rename Template refs
+
+							});
+						});
+						
+					} else {
+
+						// copy whole contents of file (to allow for manual merge)
+						if (shouldReplaceInFile){
+							templateFileContents = templateFileContents.replace(/Template/g, solutionName);
+						}
+
+						fs.mkdirSync(path.dirname(solutionPath), { recursive: true });
+						fs.writeFileSync(solutionPath, templateFileContents, utf8);
+
+					}
 				}
 			});
 			cb();
