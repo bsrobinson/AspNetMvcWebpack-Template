@@ -14,5 +14,9 @@ export class Template {
         });
         
     }
+
+    navClicked(event: Event) {
+        console.log('Navigation Clicked', event);
+    }
     
 }

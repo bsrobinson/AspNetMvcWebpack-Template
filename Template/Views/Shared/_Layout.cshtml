@@ -58,9 +58,10 @@
     @Html.Raw(embededJs)
     <script>
         function init() {
-            let site = new Template.Template();
+            site = new Template.Template();
             @Html.Raw(localJsExists ? $"page = new {controller}{view}.{controller}{view}(site, {jsData});" : "")
         }
+        let site = null;
         let page = null;
     </script>
 
@@ -73,7 +74,7 @@
     </div>
 
     <ul id="nav">
-        <li><a href="/">Home</a></li>
+        <li><a href="/" onclick="site.navClicked(event)">Home</a></li>
     </ul>
 
     <div id="content" class="@(controller)@(view)">

@@ -11,5 +11,8 @@ export class HomeIndex {
 
     }
 
+    buttonClick(event: Event) {
+        alert('Button Clicked\n\n' + event)
+    }
     
 }
