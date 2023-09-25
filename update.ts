@@ -169,11 +169,11 @@ function applyChanges(date: Date, solutionName: string, folderName: string, cb: 
 
 			if (diff.files.find(f => !isRenamedFile(f) && f.path == 'update.ts') != null) {
 				
-				let templateFileContents = fs.readFileSync(path.join(__dirname, `./${folderName}/update.js`), utf8);
-				let solutionFileContents = fs.readFileSync(path.join(__dirname, `./update.js`), utf8);
+				let templateFileContents = fs.readFileSync(path.join(__dirname, `./${folderName}/update.ts`), utf8);
+				let solutionFileContents = fs.readFileSync(path.join(__dirname, `./update.ts`), utf8);
 
 				if (templateFileContents != solutionFileContents) {
-					fs.writeFileSync('./update.js', templateFileContents, utf8);	
+					fs.writeFileSync('./update.ts', templateFileContents, utf8);	
 					console.log(`\nUpdate Template script has been updated.`);
 					console.log(`Commit that change and run again.\n`);
 
@@ -183,7 +183,7 @@ function applyChanges(date: Date, solutionName: string, folderName: string, cb: 
 
 			}
 
-			let filesToIgnore = [ 'update.js', 'README.md' ]
+			let filesToIgnore = [ 'update.ts', 'README.md' ]
 			diff.files.filter(f => !isRenamedFile(f) && !filesToIgnore.includes(f.path)).forEach(file => {
 
 				let templatePath = isRenamedFile(file) ? file.pathAfter : file.path;
