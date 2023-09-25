@@ -2,6 +2,7 @@
 // Script to check for and apply changes from the orginal template
 //
 
+import { AnyChunk, AnyFileChange, AnyLineChange, BinaryFilesChunk, GitDiff, RenamedFile, UnchangedLine } from './node_modules/parse-git-diff/build/cjs/types';
 const fs = require('fs')
 const path = require('path')
 const https = require("https");
@@ -14,10 +15,10 @@ let utf8 = { encoding: 'utf8' };
 
 git(`diff HEAD`, r => {
 
-	if (r != '') {
-		console.log(`\nPlease commit or stash all changes before running this script\n`);
-		process.exit(0)
-	}
+	// if (r != '') {
+	// 	console.log(`\nPlease commit or stash all changes before running this script\n`);
+	// 	process.exit(0)
+	// }
 
 	console.log(``);
 	console.log(`    ***************************************************************`);
@@ -41,7 +42,7 @@ git(`diff HEAD`, r => {
 
 		solutionName = solutionName.trim();
 		
-		getJson(`https://api.github.com/repos/bsrobinson/AspNetMvcWebpack-Template`, response => {
+		getJson<GitHubRepo>(`https://api.github.com/repos/bsrobinson/AspNetMvcWebpack-Template`, response => {
 
 			let templateUpdated = new Date(response.pushed_at);
 			console.log(`Template last updated ${templateUpdated}\n`);
@@ -56,7 +57,7 @@ git(`diff HEAD`, r => {
 
 				cloneTemplate(folderName => {
 
-					applyChanges(date, solutionName, folderName, _ => {
+					applyChanges(date, solutionName, folderName, () => {
 
 						deleteTempFolder(folderName)
 						updateSolutionUpdateDate(templateUpdated);
@@ -74,7 +75,7 @@ git(`diff HEAD`, r => {
 });
 
 
-function getStartDate(cb) {
+function getStartDate(cb: (startDate: Date) => void): void {
 
 	let updateTemplateDateFile = path.join(__dirname, `./updateTemplateDate`);
 	if (fs.existsSync(updateTemplateDateFile)) {
@@ -84,7 +85,7 @@ function getStartDate(cb) {
 
 		new Confirm({
 			message: 'Continue updating?'
-		}).run().then(answer => {
+		}).run().then((answer: boolean) => {
 			if (answer) {
 				cb(date);
 			} else {
@@ -106,15 +107,15 @@ function getStartDate(cb) {
 					{ value: 2, name: `Get updates since specific date...` },
 					{ value: 3, name: `Cancel` },
 				],
-				result(choice) { return this.map(choice)[choice] },
-			}).run().then(async answer => {
+				result(choice: number) { return this.map(choice)[choice] },
+			}).run().then(async (answer: number) => {
 				if (answer == 0) {
 					cb(new Date(intialCommitDateStr))
 				}
 				if (answer == 1) {
 					new Input({
 						message: `Enter commit hash from this repo that marks the last Template update`,
-					}).run().then(answer => {
+					}).run().then((answer: string) => {
 						git(`show '${answer}' --no-patch --no-notes --pretty='%ad'`, response => {
 							if (response) {
 								cb(new Date(response));
@@ -142,7 +143,7 @@ function getStartDate(cb) {
 	}
 }
 
-function cloneTemplate(cb) {
+function cloneTemplate(cb: (folderName: string) => void): void {
 
 	console.log('\nDownloading lastest template');
 
@@ -157,16 +158,16 @@ function cloneTemplate(cb) {
 	
 }
 
-function applyChanges(date, solutionName, folderName, cb) {
+function applyChanges(date: Date, solutionName: string, folderName: string, cb: () => void): void {
 
 	console.log(`Applying changes in Template`);
 
 	git(`-C ./${folderName} log --pretty='%H' --since='${date.toISOString()}' --reverse | head -1`, firstCommitAfterDate => {
 		git(`-C ./${folderName} diff ${firstCommitAfterDate.trim()}^..`, response => {
 			
-			let diff = parseGitDiff(response);
+			let diff: GitDiff = parseGitDiff(response);
 
-			if (diff.files.find(f => f.path == 'update.js') != null) {
+			if (diff.files.find(f => !isRenamedFile(f) && f.path == 'update.ts') != null) {
 				
 				let templateFileContents = fs.readFileSync(path.join(__dirname, `./${folderName}/update.js`), utf8);
 				let solutionFileContents = fs.readFileSync(path.join(__dirname, `./update.js`), utf8);
@@ -183,10 +184,10 @@ function applyChanges(date, solutionName, folderName, cb) {
 			}
 
 			let filesToIgnore = [ 'update.js', 'README.md' ]
-			diff.files.filter(f => !filesToIgnore.includes(f.path)).forEach(file => {
+			diff.files.filter(f => !isRenamedFile(f) && !filesToIgnore.includes(f.path)).forEach(file => {
 
-				let templatePath = file.path || file.pathAfter;
-				let solutionPath = path.join(__dirname, (file.path || file.pathBefore).replace(/Template/g, `${solutionName}`));
+				let templatePath = isRenamedFile(file) ? file.pathAfter : file.path;
+				let solutionPath = path.join(__dirname, (isRenamedFile(file) ? file.pathBefore : file.path).replace(/Template/g, `${solutionName}`));
 				let extension = path.extname(templatePath);
 
 				if (file.type == 'DeletedFile') {
@@ -205,11 +206,13 @@ function applyChanges(date, solutionName, folderName, cb) {
 						let solutionFileLines = solutionFileContents.split('\n');
 		
 						file.chunks.forEach(chunk => {
-							chunk.changes.filter(c => c.type == 'UnchangedLine').forEach(change => {
-								if (change.content != solutionFileLines[change.lineBefore -1]) {
-									unchangedLinesRemainUnchanged = false;
-								}
-							});
+							if (!isBinaryFilesChunk(chunk)) {
+								chunk.changes.forEach(change => {
+									if (isUnchangedLine(change) && change.content != solutionFileLines[change.lineBefore -1]) {
+										unchangedLinesRemainUnchanged = false;
+									}
+								});
+							}
 						});
 					}
 
@@ -220,13 +223,15 @@ function applyChanges(date, solutionName, folderName, cb) {
 					if (unchangedLinesRemainUnchanged) {
 						
 						file.chunks.forEach(chunk => {
-							chunk.changes.filter(c => c.type != 'UnchangedLine').forEach(change => {
+							if (!isBinaryFilesChunk(chunk)) {
+								chunk.changes.filter(c => c.type != 'UnchangedLine').forEach(change => {
 
-								//TODO
-								//apply line change to file in solution
-									//!! rename Template refs
+									//TODO
+									//apply line change to file in solution
+										//!! rename Template refs
 
-							});
+								});
+							}
 						});
 						
 					} else {
@@ -254,13 +259,13 @@ function applyChanges(date, solutionName, folderName, cb) {
 	});
 }
 
-function deleteTempFolder(folderName) {
+function deleteTempFolder(folderName: string): void {
 
 	fs.rmSync(`./${folderName}`, { recursive: true, force: true });
 
 }
 
-function updateSolutionUpdateDate(date) {
+function updateSolutionUpdateDate(date: Date): void {
 
 	fs.writeFileSync(`./updateTemplateDate`, date.toISOString(), utf8);
 
@@ -268,11 +273,11 @@ function updateSolutionUpdateDate(date) {
 
 
 
-function git(command, cb, throwError = false) {
+function git(command: string, cb: (response: string) => void, throwError = false): void {
 	executeCommand(`git ${command}`, cb, throwError);
 }
-function executeCommand(command, cb, throwError = true) {
-	exec(command, function(err, stdout, stderr) {
+function executeCommand(command: string, cb: (response: string) => void, throwError = true): void {
+	exec(command, function(err: string, stdout: string, stderr: string) {
 		if (err != null) {
 			if (throwError) {
 				console.error(err);
@@ -291,20 +296,34 @@ function executeCommand(command, cb, throwError = true) {
 	});
 }
 
-function getJson(url, cb) {
+function getJson<T>(url: string, cb: (json: T) => void): void {
 	let options = {
 		headers: { 'User-Agent': 'bsrobinson-Update-Template-Script' }
 	};	  
-	https.get(url, options, r => {
+	https.get(url, options, (r: any) => {
 		let data = '';
-		r.on('data', chunk => {
+		r.on('data', (chunk: string) => {
 			data += chunk;
 		});
 		r.on('end', () => {
 			cb(JSON.parse(data));
 		});
-	}).on('error', err => {
+	}).on('error', (err: string) => {
 		console.error(err);
 		process.exit(-1);
 	});
+}
+
+function isRenamedFile(file: AnyFileChange): file is RenamedFile {
+    return (<RenamedFile>file).pathAfter !== undefined;
+}
+function isBinaryFilesChunk(chunk: AnyChunk): chunk is BinaryFilesChunk {
+    return (<BinaryFilesChunk>chunk).pathAfter !== undefined;
+}
+function isUnchangedLine(line: AnyLineChange): line is UnchangedLine {
+    return (<UnchangedLine>line).lineBefore !== undefined && (<UnchangedLine>line).lineAfter !== undefined;
+}
+
+interface GitHubRepo {
+	pushed_at: string,
 }

@@ -2,7 +2,7 @@
   "scripts": {
     "start": "node watch.js",
     "publish": "npx ts-node publish.ts",
-    "update-template": "node update.js"
+    "update-template": "npx ts-node -O '{\"module\": \"commonjs\"}' update.ts"
   },
   "devDependencies": {
     "bestzip": "^2.2.1",

@@ -43,8 +43,7 @@ jobs:
           find ./Template.Library -type f -iname \*.json -exec sed -i "s/Template/$SAFE_NAME/g" {} \;
           find ./Template.Library -type f -iname \*.csproj -exec sed -i "s/Template/$SAFE_NAME/g" {} \;
 
-          sed -i "s/Template/$SAFE_NAME/g" ./watch.js
-          sed -i "s/Template/$SAFE_NAME/g" ./webpack.config.js
+          sed -i "s/Template/$SAFE_NAME/g" ./*.js
           sed -i "s/Template/$SAFE_NAME/g" ./*.json
           sed -i "s/Template/$SAFE_NAME/g" ./*.sln
           sed -i "s/Template/$SAFE_NAME/g" ./.vscode/*.json
