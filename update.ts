@@ -216,7 +216,7 @@ function applyChanges(date: Date, solutionName: string, folderName: string, cb: 
 						});
 					}
 
-					let shouldReplaceInFile = ['.cs', '.ts', '.cshtml', '.json', '.csproj', '.js', '.sln'].indexOf(extension) >= 0
+					let shouldReplaceInFile = ['.cs', '.cshtml', '.json', '.csproj', '.js', '.sln'].indexOf(extension) >= 0
 					let templateFileContents = fs.readFileSync(path.join(__dirname, `./${folderName}/${templatePath}`), utf8);
 					
 					unchangedLinesRemainUnchanged = false; //delete this line when code written below
@@ -237,7 +237,7 @@ function applyChanges(date: Date, solutionName: string, folderName: string, cb: 
 					} else {
 
 						// copy whole contents of file (to allow for manual merge)
-						if (shouldReplaceInFile){
+						if (shouldReplaceInFile) {
 							templateFileContents = templateFileContents.replace(/Template/g, solutionName);
 						}
 
