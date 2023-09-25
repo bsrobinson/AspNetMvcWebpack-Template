@@ -15,10 +15,10 @@ let utf8 = { encoding: 'utf8' };
 
 git(`diff HEAD`, r => {
 
-	// if (r != '') {
-	// 	console.log(`\nPlease commit or stash all changes before running this script\n`);
-	// 	process.exit(0)
-	// }
+	if (r != '') {
+		console.log(`\nPlease commit or stash all changes before running this script\n`);
+		process.exit(0)
+	}
 
 	console.log(``);
 	console.log(`    ***************************************************************`);
