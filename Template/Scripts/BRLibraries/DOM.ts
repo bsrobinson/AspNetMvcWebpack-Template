@@ -7,6 +7,13 @@ export interface ElementAttributes {
     style?: string,
     title?: string | null,
 
+    href?: string | null,
+    target?: string | null,
+    src?: string | null,
+
+    type?: ('input' | 'checkbox' | 'submit' | 'button') | null,
+    value?: string | null,
+
     events?: EventAttributes
     bool?: BooleanAttributes,
     data?: Record<string, string>
@@ -93,9 +100,10 @@ declare global { interface HTMLElement {
     * @param {ElementAttributes} attributes - Attribute name and values
     * @returns {HTMLElement} - Newly created element
     */
-    appendElement(htmlElementName: string, attributes: ElementAttributes): HTMLElement;
+    appendElement(htmlElementName: string): HTMLElement;
+    appendElement(htmlElementName: string, attributes: ElementAttributes | null): HTMLElement;
 } }
-HTMLElement.prototype.appendElement = function (htmlElementName: string, attributes: ElementAttributes): HTMLElement {
+HTMLElement.prototype.appendElement = function (htmlElementName: string, attributes: ElementAttributes | null = null): HTMLElement {
     return this.appendChild(makeElement(htmlElementName, attributes));
 }
 
@@ -106,9 +114,10 @@ declare global { interface HTMLElement {
     * @param {ElementAttributes} attributes - Attribute name and values
     * @returns {HTMLElement} - Newly created element
     */
-    insertElementBefore(htmlElementName: string, attributes: ElementAttributes): HTMLElement | null;
+    insertElementBefore(htmlElementName: string): HTMLElement | null;
+    insertElementBefore(htmlElementName: string, attributes: ElementAttributes | null): HTMLElement | null;
 } }
-HTMLElement.prototype.insertElementBefore = function (htmlElementName: string, attributes: ElementAttributes): HTMLElement | null {
+HTMLElement.prototype.insertElementBefore = function (htmlElementName: string, attributes: ElementAttributes | null = null): HTMLElement | null {
     if (this.parentNode) {
         return this.parentNode.insertBefore(makeElement(htmlElementName, attributes), this);
     }
@@ -122,9 +131,10 @@ declare global { interface HTMLElement {
     * @param {ElementAttributes} attributes - Attribute name and values
     * @returns {HTMLElement} - Newly created element
     */
-    insertElementAfter(htmlElementName: string, attributes: ElementAttributes): HTMLElement | null;
+    insertElementAfter(htmlElementName: string): HTMLElement | null;
+    insertElementAfter(htmlElementName: string, attributes: ElementAttributes | null): HTMLElement | null;
 } }
-HTMLElement.prototype.insertElementAfter = function (htmlElementName: string, attributes: ElementAttributes): HTMLElement | null {
+HTMLElement.prototype.insertElementAfter = function (htmlElementName: string, attributes: ElementAttributes | null = null): HTMLElement | null {
     if (this.parentNode) {
         return this.parentNode.insertBefore(makeElement(htmlElementName, attributes), this.nextSibling);
     }
@@ -151,8 +161,10 @@ declare global { interface HTMLElement {
     * @param {ElementAttributes} attributes - Attribute name and values
     * @returns {HTMLElement} - The element
     */
+    makeElement(htmlElementName: string): HTMLElement;
+    makeElement(htmlElementName: string, attributes: ElementAttributes | null): HTMLElement;
 } }
-export function makeElement(htmlElementName: string, attributes: ElementAttributes): HTMLElement {
+export function makeElement(htmlElementName: string, attributes: ElementAttributes | null = null): HTMLElement {
     var e = document.createElement(htmlElementName);
     for (let a in attributes) {
         if (a == 'events') {
@@ -364,4 +376,55 @@ HTMLElement.prototype.html = function (html: string | null = null): string {
         this.innerHTML = html;
     }
     return this.innerHTML;
+}
+
+
+declare global { interface HTMLFormElement {
+    /**
+    * Convert form elements to name=value pairs string
+    * @returns {string} - '' if no elements
+    */
+   toUrlString(): string;
+} }
+HTMLFormElement.prototype.toUrlString = function (): string {
+	let string = '';
+	for (let i = 0; i < this.elements.length; i++) {
+		if (string != '') { string += '&'; }
+        let element = this.elements[i] as HTMLInputElement;
+		if (element.name) {
+			string += element.name + '=' + encodeURIComponent(element.value);
+		}
+	}
+	return string;
+}
+
+declare global { interface HTMLFormElement {
+    /**
+    * Convert form elements and values to json object
+    * @returns {object} - {} if no elements
+    */
+    toJson<T>(): T;
+} }
+HTMLFormElement.prototype.toJson = function<T>(): T {
+	var obj: Record<string, string> = {};
+ 	for (var i = 0; i < this.elements.length; i++) {
+ 		let element = this.elements[i] as HTMLInputElement;
+ 		if (element.name) {
+ 			var val: any = element.value;
+ 			if (val == '' && this.elements[i].getAttribute('data-nullonempty') == 'true') {
+ 				val = null;
+ 			} else if (this.elements[i].getAttribute('data-type') == 'int') {
+ 				val = parseInt(val);
+ 			} else if (this.elements[i].getAttribute('data-type') == 'float') {
+ 				val = parseFloat(val);
+ 			} else if (this.elements[i].getAttribute('data-type') == 'bool') {
+ 				val = val.toLowerCase() == 'true';
+ 			}
+ 			if (element.type == 'checkbox') {
+ 				val = element.checked;
+ 			}
+ 			obj[element.name] = val;
+ 		}
+ 	}
+ 	return obj as T;
 }
