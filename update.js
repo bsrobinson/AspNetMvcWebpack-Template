@@ -191,7 +191,9 @@ function applyChanges(date, solutionName, folderName, cb) {
 
 				if (file.type == 'DeletedFile') {
 
-					fs.unlinkSync(solutionPath);
+					if (fs.existsSync(solutionPath)) {
+						fs.unlinkSync(solutionPath);
+					}
 
 				} 
 				else {
