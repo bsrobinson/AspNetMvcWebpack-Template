@@ -3,11 +3,7 @@ import { $ } from '../../Scripts/BRLibraries/DOM'
 
 export class HomeIndex {
 
-    site: Template;
-
-    constructor(site: Template, data: any | null) {
-
-        this.site = site;
+    constructor(private site: Template, private data: any | null) {
 
     }
 

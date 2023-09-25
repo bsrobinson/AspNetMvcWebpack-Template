@@ -52,17 +52,22 @@
     <link rel="apple-touch-icon" href="/_images/admin/icons/.png">
 
     <link rel="stylesheet" href="~/dist/css/Site.css" asp-append-version="true" />
-    @Html.Raw(embededCss)
-
     <script src="~/dist/js/Site.js" asp-append-version="true"></script>
+
     @Html.Raw(embededJs)
+    @Html.Raw(embededCss)
+    
     <script>
         function init() {
             site = new Template.Template();
             @Html.Raw(localJsExists ? $"page = new {controller}{view}.{controller}{view}(site, {jsData});" : "")
+            if (site.windowResize) {
+                window.onresize = site.windowResize;
+                site.windowResize();
+            }
         }
-        let site = null;
-        let page = null;
+        window.site = null;
+        window.page = null;
     </script>
 
 </head>

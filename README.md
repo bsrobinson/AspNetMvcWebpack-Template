@@ -153,7 +153,7 @@ The file should include a starting class named after the controller and view.  S
 import { Template } from '../../Scripts/Site'
 
 export class HomeIndex {
-    constructor(site: Template, data: any | null) {
+    constructor(private site: Template, private data: any | null) {
     }
 }
 ```
@@ -176,6 +176,8 @@ The loaded and initialised page class can be accessed from anywhere as `window.p
 
 This calls the `buttonClick` function in `HomeIndex.ts`. `event` is optional, but included to demonstrate what is possible.
 
+`window.page` is defined in `Site.ts` so page functions can be accessed from global scripts.  As the type will change it is defined as `any` and functions should always be tested for before called - see the `windowResize` code
+
 #### Passing data to the page on load
 
 You can collect data at anytime after the page has loaded using API's and the Gaspar service classes (see the `APIDemoController` and the call to it's post method in `Site.ts`); although often its nice to have some data preloaded from the server on page load.
@@ -195,7 +197,7 @@ public IActionResult Index()
 Simply doing this, will populate the data property; for the above.  You should change the constructor data type as follows:
 
 ```typescript
-constructor(site: Template, data: MyModel) {
+constructor(private site: Template, private data: MyModel) {
 ```
 
 *In C#, MyModel should have the [ExportFor(Gaspar.TypeScript)] declaration to make MyModel available within Typescript.*
@@ -204,7 +206,23 @@ constructor(site: Template, data: MyModel) {
 
 Node modules can be added and referenced in your typescript files as you would expect; they follow the above rules and will only be packed if referenced.
 
-*Note; while there are a large number of node packages in the template, they are all only used for build processes and not included in the final app.  This template exports significantly less code than other webpack implementations; especially around the css.*
+*Note; while there are a large number of node packages in the template, they are all only used for build processes and not included in the final app.  This template exports significantly less code than other webpack implementations; especially around the css.
+
+#### Source Maps
+
+Source Maps are generated for all complied typescript files during development (not in a published app).
+
+The local page javascript that is injected into the page is slightly more complicated than usual due to where it appears in the source html.  It is injected in `_Layout.cshtml` with the line `@Html.Raw(embededJs)`
+
+**If you edit the `_Layout.cshtml` file**, adding lines above `@Html.Raw(embededJs)` (pushing it down the page); you will need to update the offset value in the webpack config.  In `webpack.config.js` update this line near the top of the file:
+
+```javascript
+var embededJsMapOffset = 15;
+```
+
+#### Window Resizes
+
+Some designs require element sizing based on the window size; and resizing if the window size changes.  In `Site.ts` you will see a `windowResize()` function, this will be called on load and whenever the window is resized; put your resizing logic in that function.  It will check for and call (if found) `windowResize()` on the page; implement this if you have page specific elements that need to be sized.
 
 ### SCSS / CSS
 
