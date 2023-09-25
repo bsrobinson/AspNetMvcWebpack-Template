@@ -1,9 +1,11 @@
 {
   "scripts": {
     "start": "node watch.js",
+    "publish": "npx ts-node publish.ts",
     "update-template": "node update.js"
   },
   "devDependencies": {
+    "bestzip": "^2.2.1",
     "enquirer": "^2.4.1",
     "glob": "^10.2.6",
     "modify-source-webpack-plugin": "^4.1.0",
@@ -12,6 +14,7 @@
     "sass-loader": "^13.3.1",
     "source-map": "^0.7.4",
     "ts-loader": "^9.4.3",
+    "ts-node": "^10.9.1",
     "webpack-cli": "^5.1.1"
   }
 }

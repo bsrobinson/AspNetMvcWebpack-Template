@@ -286,13 +286,33 @@ The template is ready to connect to MySql, simply:
 
 ## Publishing the Application
 
-To publish the application, run the following from the command line:
+When publishing (via `dotnet publish`), webpack will be run in production mode which will minify the javascript and css, and remove map files and debugger statements.
+
+A publish script is provided to package the published applications and upload the files to your server.  The script currently only supports publish to [Azure Web App](https://azure.microsoft.com/en-gb/products/app-service/web); other services can be added.
+
+To publish the application, run:
 
 ```bash
-dotnet publish
+npm run publish
 ```
 
-When publishing, webpack will be run in production mode which will minify the javascript and css, and remove map files and debugger statements.
+For the publish to run, you will need to provide the publish details in the `secrets.json` file.  *This file should be created at the project root and is included in the .gitignore file, so will not be checked in, and can safely be used for other passwords and access tokens.*
+
+#### To publish to [Azure Web App](https://azure.microsoft.com/en-gb/products/app-service/web)
+
+Azure Web App publish requires the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli).  You need to add the following configuration to secrets.json:
+
+```json
+{
+  "Publish": {
+    "Service": "AzureWebApp",
+    "ResourceGroup": "resource_group_name",
+    "AppName": "app_name"
+  }
+}
+```
+
+No credentials are required; you will login via a browser.
 
 <!-- REMOVE_ON_RENAME_END -->
 
