@@ -166,7 +166,9 @@ If the file exists, this class will be loaded and initialised on page load.  It'
 
 - `data` is the json data this page is loaded with (see below); you should update `any | null` to the correct type once you know it.
 
-Your local typescript file can reference any other script files in the solution.  If the referenced script has already been used by the global script, it will simply use that pre-loaded version; however if it is only referenced in the page it will be injected onto the page with the rest of the javascript (thanks to [WebPack magic](https://webpack.js.org/configuration/entry-context/#dependencies)!)
+Your local typescript file can reference any other script files in the solution.  If the referenced script has already been used by the global script, it will simply use that pre-loaded version; however if it is only referenced in the page it will be injected onto the page with the rest of the javascript (thanks to [WebPack magic](https://webpack.js.org/configuration/entry-context/#dependencies)!).
+
+If you are only referencing external files on local pages, but want to code in the global script file, import the file in `Site.ts` as `import './filename';`
 
 The loaded and initialised page class can be accessed from anywhere as `window.page`, for example, see how the demo button calls the local function on click:
 
