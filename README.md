@@ -314,6 +314,18 @@ Azure Web App publish requires the [Azure CLI](https://learn.microsoft.com/en-us
 
 No credentials are required; you will login via a browser.
 
+### Replacements during publish
+
+If you want to replace some text in your published files; for example to insert text that cannot be committed to source control, you can use the `Replacements` feature of the publish script.  To do this, within the `Publish` object in `secrets.json` you can add, for example:
+
+```json
+"Replacements": [{
+    "File": //file path and name, relative to the publish folder
+    "Replace": //text or regex to find in the file
+    "With": //text to insert
+}, {...}]
+```
+
 <!-- REMOVE_ON_RENAME_END -->
 
 ## Updating from the Template

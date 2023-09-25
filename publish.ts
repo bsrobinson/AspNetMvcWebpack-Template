@@ -1,4 +1,5 @@
 ﻿const fs = require('fs')
+const path = require('path')
 const exec = require('child_process').exec;
 const glob = require("glob")
 const { Select } = require('enquirer');
@@ -17,7 +18,7 @@ new Select({
 		let publishConfig = readPublishConfig(paths.secrets)
 		if (publishConfig) {
 
-			dotnetPublish(paths, () => {
+			dotnetPublish(paths, publishConfig, () => {
 
 				publishToService(paths!.zip, publishConfig!, url => {
 					console.log(`\nPublished to ${url}, opening...\n`);
@@ -102,16 +103,28 @@ function readPublishConfig(secretsPath: string): PublishConfig | null {
 }
 
 
-function dotnetPublish(paths: Paths, cb: () => void): void {
+function dotnetPublish(paths: Paths, publishConfig: PublishConfig, cb: () => void): void {
 	console.log(`\nBuilding ${paths.csproj}`);
 	executeCommand(`dotnet clean ${paths.csproj}`, () => {
 		executeCommand(`dotnet publish ${paths.csproj} -c Release -o ${paths.publish}`, () => {
+			replaceInPublish(publishConfig, paths);
 			zip({
 				source: './*',
 				destination: `../${paths.zip.split('/').reverse()[0]}`,
 				cwd: paths.publish,
 			}).then(() => cb());
 		});
+	});
+}
+
+function replaceInPublish(publishConfig: PublishConfig, paths: Paths) {
+	(publishConfig.Replacements || []).forEach(replacement => {
+		let filePath = `${paths.publish}${replacement.File}`;
+		if (fs.existsSync(filePath)) {
+			let fileContents = fs.readFileSync(path.join(__dirname, filePath), { encoding: 'utf8' });
+			fileContents = fileContents.replace(new RegExp(replacement.Replace, 'g'), replacement.With);
+			fs.writeFileSync(filePath, fileContents, { encoding: 'utf8' });
+		}
 	});
 }
 
@@ -198,8 +211,14 @@ interface SecretsFile {
 }
 interface PublishConfig {
 	Service: Service,
+	Replacements?: PublishConfigReplacement[],
 	ResourceGroup?: string,
 	AppName?: string,
+}
+interface PublishConfigReplacement {
+	File: string,
+	Replace: string,
+	With: string,
 }
 enum Service {
 	AzureWebApp = 'AzureWebApp',
