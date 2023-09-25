@@ -27,9 +27,13 @@ declare global { interface Date {
 	* @returns {string} - Formatted date
 	*/
 	format(format: string): string;
+	formatForJson(): string;
 } }
 Date.prototype.format = function (format: string): string {
     return new DateFormat(this).format(format);
+}
+Date.prototype.formatForJson = function (): string {
+	return new DateFormat(this).format('c');
 }
 
 declare global { interface Date {
