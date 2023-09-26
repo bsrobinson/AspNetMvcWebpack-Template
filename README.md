@@ -339,3 +339,9 @@ npm run update-template
 This process is still quite manual, but the script hopes to make it as easy as possible.  You should only run it in a source controlled environment, as the changes will be made directly to your project, and will need careful manual review.
 
 The first time you run the script you'll be asked when to update from; which will default to your first commit.  The date last updated will be saved to a file; commit this file to make future updates simpler.
+
+## Examples
+
+This template is used by the following projects; have a look at what can be achieved!
+
+- [GitHub - bsrobinson/MediaLife](https://github.com/bsrobinson/MediaLife)
