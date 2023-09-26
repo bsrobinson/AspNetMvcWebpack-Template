@@ -2,7 +2,7 @@
 
 # AspNetMvcWebpack-Template
 
-Base template for single stack web applications with a c# [asp.net/mvc]([Getting Started with ASP.NET MVC 5 | Microsoft Learn](https://learn.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/getting-started)) and [mysql](https://www.mysql.com) backend, and [typescript](https://www.typescriptlang.org)/[sass](https://sass-lang.com)/[razor]([Introduction to Razor Pages in ASP.NET Core | Microsoft Learn](https://learn.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-7.0&tabs=visual-studio)) frontend.  Using [Webpack](https://webpack.js.org) and [Gaspar]([GitHub - wckdrzr/Gaspar: A c# model to other language converter. Support includes Typescript, Angular and ProtoBuff](https://github.com/wckdrzr/Gaspar)) build tools.
+Base template for single stack web applications with a c# [asp.net/mvc](https://learn.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/getting-started) and [mysql](https://www.mysql.com) backend, and [typescript](https://www.typescriptlang.org)/[sass](https://sass-lang.com)/[razor](https://learn.microsoft.com/en-us/aspnet/core/razor-pages/?view=aspnetcore-7.0&tabs=visual-studio) frontend.  Using [Webpack](https://webpack.js.org) and [Gaspar](https://github.com/wckdrzr/Gaspar) build tools.
 
 ## Structure
 
@@ -318,7 +318,7 @@ No credentials are required; you will login via a browser.
 
 If you want to replace some text in your published files; for example to insert text that cannot be committed to source control, you can use the `Replacements` feature of the publish script.  To do this, within the `Publish` object in `secrets.json` you can add, for example:
 
-```json
+```javascript
 "Replacements": [{
     "File": //file path and name, relative to the publish folder
     "Replace": //text or regex to find in the file
