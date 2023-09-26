@@ -236,6 +236,12 @@ CSS should be added as SCSS into one of these locations:
 - `/Views/{section}/{page}.scss` to be available only to a given page in the application (see the example in `/Views/Home/Index.scss`).
   *The complied css version of this file will be injected into the loaded page*
 
+If you would like to separate some of the global styles into separate files, reference each additional file at the top `Site.scss` with:
+
+```scss
+@use './MoreStyles.scss';
+```
+
 The contents of the local page scss file will all be prefixed with the page name on build to ensure css in here doesn't affect global content; this works using the class declaration on the content section in `Layout.cshtml`:
 
 ```cshtml
