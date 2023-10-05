@@ -12,7 +12,7 @@ function TypescriptConfig(paths) {
         mode: 'development',
         entry: () => {
             let obj = {
-                scripts: { import: `${paths.projectRoot}/Scripts/Site.ts`, library: { name: paths.projectName, type: 'window' }, filename: 'Site.js' },
+                scripts: { import: `${paths.projectRoot}/Scripts/Site.ts`, library: { name: paths.projectName.replace('.', ''), type: 'window' }, filename: 'Site.js' },
             };
             glob_1.glob.sync(`${paths.projectRoot}/Views/**/*.ts`).forEach(path => {
                 let file = path.slice(paths.projectName.length + 7);
