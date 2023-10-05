@@ -47,7 +47,7 @@ getJson<GitHubRepo>(`https://api.github.com/repos/bsrobinson/AspNetMvcWebpack-Te
 	getStartDate(date => {
 		if (date >= templateUpdated) {
 			console.log(`\nThere have been no changes in the template the last update ${date}`);
-			console.log(`Delete the ./updateTemplateDate file to force an alternative date\n`)
+			console.log(`Delete the ./.template-scripts/update/updateTemplateDate file to force an alternative date\n`)
 			updateSolutionUpdateDate(templateUpdated)
 			process.exit(0);
 		}
@@ -71,7 +71,7 @@ getJson<GitHubRepo>(`https://api.github.com/repos/bsrobinson/AspNetMvcWebpack-Te
 
 function getStartDate(cb: (startDate: Date) => void): void {
 
-	let updateTemplateDateFile = join(__dirname, `./updateTemplateDate`);
+	let updateTemplateDateFile = join(__dirname, `./.template-scripts/update/updateTemplateDate`);
 	if (existsSync(updateTemplateDateFile)) {
 		
 		let date = new Date(readFileSync(updateTemplateDateFile, { encoding: 'utf8' }))
@@ -253,7 +253,7 @@ function deleteTempFolder(folderName: string): void {
 
 function updateSolutionUpdateDate(date: Date): void {
 
-	writeFileSync(`./updateTemplateDate`, date.toISOString(), { encoding: 'utf8' });
+	writeFileSync(`./.template-scripts/update/updateTemplateDate`, date.toISOString(), { encoding: 'utf8' });
 
 }
 
