@@ -1,0 +1,12 @@
+﻿{
+	"compilerOptions": {
+		"strict": true,
+		"noImplicitAny": true,
+		"module": "commonjs",
+		"target": "ESNext",
+		"outDir": ".complied",
+		"removeComments": true,
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+    }
+}

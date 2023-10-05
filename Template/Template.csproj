@@ -26,6 +26,8 @@
 
     <Target Name="WebpackClean" BeforeTargets="Clean">
         <RemoveDir Directories=".\wwwroot\dist\" />
+        <RemoveDir Directories=".\bin\publish\" />
+        <Delete Files=".\bin\publish.zip" />
     </Target>
 
     <ItemGroup>

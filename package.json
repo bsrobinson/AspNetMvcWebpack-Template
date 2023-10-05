@@ -1,8 +1,11 @@
 {
+  "config": {
+    "scripts": "./.template-scripts/.complied"
+  },
   "scripts": {
-    "start": "node watch.js",
-    "publish": "npx ts-node publish.ts",
-    "update-template": "npx ts-node -O '{\"module\": \"commonjs\"}' update.ts"
+    "start": "node $npm_package_config_scripts/watch",
+    "publish": "node $npm_package_config_scripts/publish",
+    "update-template": "node $npm_package_config_scripts/update"
   },
   "devDependencies": {
     "bestzip": "^2.2.1",
@@ -14,7 +17,6 @@
     "sass-loader": "^13.3.1",
     "source-map": "^0.7.4",
     "ts-loader": "^9.4.3",
-    "ts-node": "^10.9.1",
     "webpack-cli": "^5.1.1"
   }
 }

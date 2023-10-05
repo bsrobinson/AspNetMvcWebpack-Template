@@ -104,28 +104,25 @@ To run in Visual Studio, open the `Template.sln` file and run the project as you
 You can run the following commands from the root of the template:
 
 - **`npm start`**
-  To clean, build and watch the default project with dotnet and webpack.
-
-- **`npm start -- [project_name]`**
-  To clean, build and watch a specific project (e.g. `npm start -- Template`).
+  To clean, build and watch the project* with dotnet and webpack.
 
 - **`npx webpack`**
   To build webpack resources (js/css) for the default project.
 
-- **`npx webpack --watch`**
-  To build and watch webpack resources (js/css) for the default project.
-
 - **`npx webpack --env project=[project_name]`**
   To build webpack resources (js/css) for the named project (e.g. `npx webpack --env project=Template`).
-
-- **`npx webpack --watch --env project=[project_name]`**
-  To build and watch webpack resources (js/css) for the named project (e.g. `npx webpack --watch --env project=Template`).
 
 - **`dotnet [ build | clean | run | watch | publish ] --project=[project_name]`**
   To run dotnet commands as usual, project must be supplied from the root.
   `dotnet build` also builds webpack resources.
   `dotnet clean` cleans webpack resources.
   `dotnet publish` builds webpack resources for production.
+
+*if you have multiple projects in your solution (e.g. a website and admin app), you will be asked which one should start (or you can choose all).  If you would like to always start the same project (and skip being asked), add the following to `./.template-scripts/config.json`
+
+```json
+"defaultProject": "PROJECT_NAME"
+```
 
 ## Writing your code
 
@@ -216,10 +213,10 @@ Source Maps are generated for all complied typescript files during development (
 
 The local page javascript that is injected into the page is slightly more complicated than usual due to where it appears in the source html.  It is injected in `_Layout.cshtml` with the line `@Html.Raw(embededJs)`
 
-**If you edit the `_Layout.cshtml` file**, adding lines above `@Html.Raw(embededJs)` (pushing it down the page); you will need to update the offset value in the webpack config.  In `webpack.config.js` update this line near the top of the file:
+**If you edit the `_Layout.cshtml` file**, adding lines above `@Html.Raw(embededJs)` (pushing it down the page); you will need to update the `embededJsMapOffset` offset value in the `./template-scripts/config.json` file.
 
 ```javascript
-var embededJsMapOffset = 15;
+
 ```
 
 #### Window Resizes
@@ -294,7 +291,7 @@ The template is ready to connect to MySql, simply:
 
 When publishing (via `dotnet publish`), webpack will be run in production mode which will minify the javascript and css, and remove map files and debugger statements.
 
-A publish script is provided to package the published applications and upload the files to your server.  The script currently only supports publish to [Azure Web App](https://azure.microsoft.com/en-gb/products/app-service/web); other services can be added.
+A publish script is provided to package the published applications and upload the files to your server.  The script currently only supports publish to [Azure Web App](https://azure.microsoft.com/en-gb/products/app-service/web); other services can be added (see `./.template-scripts/publish/`).
 
 To publish the application, run:
 
@@ -302,11 +299,17 @@ To publish the application, run:
 npm run publish
 ```
 
-For the publish to run, you will need to provide the publish details in the `secrets.json` file.  *This file should be created at the project root and is included in the .gitignore file, so will not be checked in, and can safely be used for other passwords and access tokens.*
+If you have multiple projects in your solution (e.g. a website and admin app), you will be asked which one to publish (or you can choose all).  If you would like to always publish the same project (and skip being asked), add the following to `./.template-scripts/config.json`.
+
+```json
+"defaultProject": "PROJECT_NAME"
+```
+
+For the publish to run, you will need to provide the publish details in the config file at `./template-scripts/config.json`.  If you would like to prevent the details from being committed to source control, you can add them to `./template-scripts/secrets.json` instead.
 
 #### To publish to [Azure Web App](https://azure.microsoft.com/en-gb/products/app-service/web)
 
-Azure Web App publish requires the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli).  You need to add the following configuration to secrets.json:
+Azure Web App publish requires the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli).  You need to add the following configuration:
 
 ```json
 {
@@ -322,7 +325,7 @@ No credentials are required; you will login via a browser.
 
 ### Replacements during publish
 
-If you want to replace some text in your published files; for example to insert text that cannot be committed to source control, you can use the `Replacements` feature of the publish script.  To do this, within the `Publish` object in `secrets.json` you can add, for example:
+If you want to replace some text in your published files; for example to insert text that cannot be committed to source control, you can use the `Replacements` feature of the publish script.  To do this, within the `Publish` config object you can add, for example:
 
 ```javascript
 "Replacements": [{
@@ -351,3 +354,7 @@ The first time you run the script you'll be asked when to update from; which wil
 This template is used by the following projects; have a look at what can be achieved!
 
 - [GitHub - bsrobinson/MediaLife](https://github.com/bsrobinson/MediaLife)
+
+Also, the following websites are build from the template:
+
+- https://wckdrzr.com
