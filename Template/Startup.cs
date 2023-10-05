@@ -22,32 +22,6 @@ namespace Template
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            /*
-             * Uncomment if Azure Auth Enabled; then use [Authorize] decorations on Actions
-             *		... except HomeController/Index where code needs uncommenting
-             *      also uncomment app.UseAuthentication(); below
-             *      
-             * In Azure enable authentication, and configure AD Auth using express
-             *		
-             * If removing; delete the .auth folder from wwwroot
-             * 
-            services.AddAuthentication(
-                options =>
-                {
-                    options.DefaultAuthenticateScheme = EasyAuthAuthenticationDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = EasyAuthAuthenticationDefaults.AuthenticationScheme;
-                }
-            ).AddEasyAuth(
-                options =>
-                {
-                    if (this.Environment.IsDevelopment())
-                    {
-                        options.LocalProviderOption.AuthEndpoint = ".auth/me.json";
-                    }
-                }
-            );
-            */
-
             string? connectionString = Configuration.GetConnectionString("MySql");
             if (connectionString != null)
             {

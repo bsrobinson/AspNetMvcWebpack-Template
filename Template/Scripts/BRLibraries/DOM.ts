@@ -372,7 +372,7 @@ declare global { interface HTMLElement {
    html(): string
 } }
 HTMLElement.prototype.html = function (html: string | null = null): string {
-    if (html) {
+    if (html != null) {
         this.innerHTML = html;
     }
     return this.innerHTML;

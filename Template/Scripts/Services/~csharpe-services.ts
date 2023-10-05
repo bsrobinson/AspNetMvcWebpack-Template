@@ -36,8 +36,18 @@ export enum ServiceErrorMessage {
     Generic,
     ServerResponse,
 }
-export class ServiceErrorHelper {
-    async handler<T>(response: Response, showError: ServiceErrorMessage): Promise<ServiceResponse<T>> {
+export class GasparServiceHelper {
+    async fetch<T>(url: string, options: RequestInit, showError: ServiceErrorMessage): Promise<ServiceResponse<T>> {
+        return fetch(url, options).then(async response => {
+            if (response.ok) {
+                try {
+                    return new ServiceResponse<T>(await response.json(), null);
+                } catch {}
+            }
+            return this.responseErrorHandler<T>(response, showError);
+        }).catch((reason: Error) => this.caughtErrorHandler<T>(reason, url, showError));
+    }
+    async responseErrorHandler<T>(response: Response, showError: ServiceErrorMessage): Promise<ServiceResponse<T>> {
         let error: ActionResultError = await response.text().then((body: any) => {
             try {
                 return JSON.parse(body);
@@ -46,6 +56,14 @@ export class ServiceErrorHelper {
                 return { status: response.status, title: response.statusText, detail: body } as ActionResultError
             }
         });
+        return this.actionResultErrorHandler(error, showError);
+    }
+    async caughtErrorHandler<T>(caughtError: Error, url: string, showError: ServiceErrorMessage): Promise<ServiceResponse<T>> {
+        console.error(url, caughtError);
+        let error = { status: -1, title: caughtError.name, detail: caughtError.message } as ActionResultError;
+        return this.actionResultErrorHandler(error, showError);
+    }
+    async actionResultErrorHandler<T>(error: ActionResultError, showError: ServiceErrorMessage): Promise<ServiceResponse<T>> {
         if (showError != ServiceErrorMessage.None) {
             new ServiceErrorHandler().showError(showError == ServiceErrorMessage.ServerResponse && (error?.detail || error?.title) ? error.detail || error.title : null);
         }
@@ -59,25 +77,13 @@ export namespace TemplateService {
 
     export class APIDemoController {
         get(showError = ServiceErrorMessage.None): Promise<ServiceResponse<string[]>> {
-            return fetch(`/api/get`, { method: 'GET' }).then(async response => {
-                return response.ok
-                    ? new ServiceResponse(await response.json(), null)
-                    : new ServiceErrorHelper().handler(response,  showError);
-            });
+            return new GasparServiceHelper().fetch(`/api/get`, { method: 'GET' }, showError);
         }
         post(obj: DemoObject, showError = ServiceErrorMessage.None): Promise<ServiceResponse<string[]>> {
-            return fetch(`/api/post`, { method: 'POST', body: JSON.stringify(obj), headers: { 'Content-Type': 'application/json' } }).then(async response => {
-                return response.ok
-                    ? new ServiceResponse(await response.json(), null)
-                    : new ServiceErrorHelper().handler(response,  showError);
-            });
+            return new GasparServiceHelper().fetch(`/api/post`, { method: 'POST', body: JSON.stringify(obj), headers: { 'Content-Type': 'application/json' } }, showError);
         }
         delete(id: number, showError = ServiceErrorMessage.None): Promise<ServiceResponse<boolean>> {
-            return fetch(`/api/delete?id=${id}`, { method: 'DELETE' }).then(async response => {
-                return response.ok
-                    ? new ServiceResponse(await response.json(), null)
-                    : new ServiceErrorHelper().handler(response,  showError);
-            });
+            return new GasparServiceHelper().fetch(`/api/delete?id=${id}`, { method: 'DELETE' }, showError);
         }
     }
     

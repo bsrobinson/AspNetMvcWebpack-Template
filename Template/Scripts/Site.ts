@@ -29,7 +29,7 @@ export class Template {
 
         //... add resize logic
         
-        if (window.page.windowResize) {
+        if (window.page?.windowResize) {
             window.page.windowResize();
         }
     }
