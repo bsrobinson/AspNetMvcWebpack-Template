@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Template
 {
@@ -23,7 +18,15 @@ namespace Template
                 {
                     if (File.Exists($"secrets.json"))
                     {
-                        config.AddJsonFile($"secrets.json");
+                        config.AddJsonFile($"secrets.json"); //for production
+                    }
+                    else
+                    {
+                        string dir = Directory.GetCurrentDirectory();
+                        if (File.Exists($"{dir}/../secrets.json"))
+                        {
+                            config.AddJsonFile($"{dir}/../secrets.json"); //for development
+                        }
                     }
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
