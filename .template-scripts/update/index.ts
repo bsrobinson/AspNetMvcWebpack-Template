@@ -38,7 +38,7 @@ console.log(``);
 
 
 let solutionName = executeCommand(`ls *.sln | sed -e 's/\.sln$//'`).trim();
-	
+
 getJson<GitHubRepo>(`https://api.github.com/repos/bsrobinson/AspNetMvcWebpack-Template`, response => {
 
 	let templateUpdated = new Date(response.pushed_at);
@@ -52,10 +52,10 @@ getJson<GitHubRepo>(`https://api.github.com/repos/bsrobinson/AspNetMvcWebpack-Te
 			process.exit(0);
 		}
 
-		let folderName = cloneTemplate();
-		applyChanges(date, solutionName, folderName);
+		let folderPath = cloneTemplate();
+		applyChanges(date, solutionName, folderPath);
 
-		deleteTempFolder(folderName)
+		deleteTempFolder(folderPath)
 		updateSolutionUpdateDate(templateUpdated);
 
 		console.log(``);
@@ -64,14 +64,14 @@ getJson<GitHubRepo>(`https://api.github.com/repos/bsrobinson/AspNetMvcWebpack-Te
 		console.log(`------------------------------------------------------------`);
 		console.log(``);
 
-		
+
 	});
 });
 
 
 function getStartDate(cb: (startDate: Date) => void): void {
 
-	let updateTemplateDateFile = join(__dirname, `./.template-scripts/update/updateTemplateDate`);
+	let updateTemplateDateFile = join(process.cwd(), `./.template-scripts/update/updateTemplateDate`);
 	if (existsSync(updateTemplateDateFile)) {
 		
 		let date = new Date(readFileSync(updateTemplateDateFile, { encoding: 'utf8' }))
@@ -139,34 +139,34 @@ function cloneTemplate(): string {
 
 	console.log('\nDownloading lastest template');
 
-	let folderName = `tmp-template-update-${new Date().valueOf()}`;
-	mkdirSync(join(__dirname, `./${folderName}`), { recursive: true });
+	let folderPath = join(process.cwd(), `./${`tmp-template-update-${new Date().valueOf()}`}`)
+	mkdirSync(folderPath, { recursive: true });
 	
-	git(`clone https://github.com/bsrobinson/AspNetMvcWebpack-Template ./${folderName}`, true);
+	git(`clone https://github.com/bsrobinson/AspNetMvcWebpack-Template ${folderPath}`, true);
 
-	return folderName;
+	return folderPath;
 
 }
 
-function applyChanges(date: Date, solutionName: string, folderName: string): void {
+function applyChanges(date: Date, solutionName: string, folderPath: string): void {
 
 	console.log(`Applying changes in Template`);
 
-	let firstCommitAfterDate = git(`-C ./${folderName} log --pretty='%H' --since='${date.toISOString()}' --reverse | head -1`);
+	let firstCommitAfterDate = git(`-C ${folderPath} log --pretty='%H' --since='${date.toISOString()}' --reverse | head -1`, true);
 	
-	let diff: GitDiff = parseGitDiff(git(`-C ./${folderName} diff ${firstCommitAfterDate.trim()}^..`));
+	let diff: GitDiff = parseGitDiff(git(`-C ${folderPath} diff ${firstCommitAfterDate.trim()}^..`));
 
 	if (diff.files.find(f => !isRenamedFile(f) && f.path == './.template-scripts/update/index.ts') != null) {
 		
-		let templateFileContents = readFileSync(join(__dirname, `./${folderName}/.template-scripts/update/index.ts`), { encoding: 'utf8' });
-		let solutionFileContents = readFileSync(join(__dirname, `./.template-scripts/update/index.ts`), { encoding: 'utf8' });
+		let templateFileContents = readFileSync(`${folderPath}/.template-scripts/update/index.ts`, { encoding: 'utf8' });
+		let solutionFileContents = readFileSync(join(process.cwd(), `./.template-scripts/update/index.ts`), { encoding: 'utf8' });
 
 		if (templateFileContents != solutionFileContents) {
 			writeFileSync('./.template-scripts/update/index.ts', templateFileContents, { encoding: 'utf8' });	
 			console.log(`\nUpdate Template script has been updated.`);
 			console.log(`Commit that change and run again.\n`);
 
-			deleteTempFolder(folderName);
+			deleteTempFolder(folderPath);
 			process.exit();
 		}
 
@@ -176,7 +176,7 @@ function applyChanges(date: Date, solutionName: string, folderName: string): voi
 	diff.files.filter(f => !isRenamedFile(f) && !filesToIgnore.includes(f.path)).forEach(file => {
 
 		let templatePath = isRenamedFile(file) ? file.pathAfter : file.path;
-		let solutionPath = join(__dirname, (isRenamedFile(file) ? file.pathBefore : file.path).replace(/Template/g, `${solutionName}`));
+		let solutionPath = join(process.cwd(), (isRenamedFile(file) ? file.pathBefore : file.path).replace(/Template/g, `${solutionName}`));
 		let extension = extname(templatePath);
 
 		if (file.type == 'DeletedFile') {
@@ -206,7 +206,7 @@ function applyChanges(date: Date, solutionName: string, folderName: string): voi
 			}
 
 			let shouldReplaceInFile = ['.cs', '.cshtml', '.json', '.csproj', '.js', '.sln'].indexOf(extension) >= 0
-			let templateFileContents = readFileSync(join(__dirname, `./${folderName}/${templatePath}`), { encoding: 'utf8' });
+			let templateFileContents = readFileSync(`${folderPath}/${templatePath}`, { encoding: 'utf8' });
 			
 			unchangedLinesRemainUnchanged = false; //delete this line when code written below
 			if (unchangedLinesRemainUnchanged) {
@@ -245,15 +245,15 @@ function applyChanges(date: Date, solutionName: string, folderName: string): voi
 	});
 }
 
-function deleteTempFolder(folderName: string): void {
+function deleteTempFolder(folderPath: string): void {
 
-	rmSync(`./${folderName}`, { recursive: true, force: true });
+	rmSync(folderPath, { recursive: true, force: true });
 
 }
 
 function updateSolutionUpdateDate(date: Date): void {
 
-	writeFileSync(`./.template-scripts/update/updateTemplateDate`, date.toISOString(), { encoding: 'utf8' });
+	writeFileSync(join(process.cwd(), `./.template-scripts/update/updateTemplateDate`), date.toISOString(), { encoding: 'utf8' });
 
 }
 
