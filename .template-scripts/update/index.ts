@@ -155,14 +155,18 @@ function applyChanges(date: Date, solutionName: string, folderPath: string): voi
 	let firstCommitAfterDate = git(`-C ${folderPath} log --pretty='%H' --since='${date.toISOString()}' --reverse | head -1`, true);
 	
 	let diff: GitDiff = parseGitDiff(git(`-C ${folderPath} diff ${firstCommitAfterDate.trim()}^..`));
-
-	if (diff.files.find(f => !isRenamedFile(f) && f.path == './.template-scripts/update/index.ts') != null) {
+	
+	if (diff.files.find(f => !isRenamedFile(f) && (f.path == '.template-scripts/update/index.ts' || f.path == '.template-scripts/.complied/update/index.js')) != null) {
 		
 		let templateFileContents = readFileSync(`${folderPath}/.template-scripts/update/index.ts`, { encoding: 'utf8' });
-		let solutionFileContents = readFileSync(join(process.cwd(), `./.template-scripts/update/index.ts`), { encoding: 'utf8' });
+		let compliedTemplateFileContents = readFileSync(`${folderPath}/.template-scripts/.complied/update/index.js`, { encoding: 'utf8' });
 
-		if (templateFileContents != solutionFileContents) {
-			writeFileSync('./.template-scripts/update/index.ts', templateFileContents, { encoding: 'utf8' });	
+		let solutionFileContents = readFileSync(join(process.cwd(), `./.template-scripts/update/index.ts`), { encoding: 'utf8' });
+		let compliedSolutionFileContents = readFileSync(join(process.cwd(), `./.template-scripts/.complied/update/index.js`), { encoding: 'utf8' });
+
+		if (templateFileContents != solutionFileContents || compliedTemplateFileContents != compliedSolutionFileContents) {
+			writeFileSync('./.template-scripts/update/index.ts', templateFileContents, { encoding: 'utf8' });
+			writeFileSync('./.template-scripts/.complied/update/index.js', compliedTemplateFileContents, { encoding: 'utf8' });
 			console.log(`\nUpdate Template script has been updated.`);
 			console.log(`Commit that change and run again.\n`);
 
@@ -172,7 +176,7 @@ function applyChanges(date: Date, solutionName: string, folderPath: string): voi
 
 	}
 
-	let filesToIgnore = [ '.template-scripts/update/index.ts', 'README.md' ]
+	let filesToIgnore = [ '.template-scripts/update/index.ts', '.template-scripts/.complied/update/index.js', 'README.md' ]
 	diff.files.filter(f => !isRenamedFile(f) && !filesToIgnore.includes(f.path)).forEach(file => {
 
 		let templatePath = isRenamedFile(file) ? file.pathAfter : file.path;
@@ -206,7 +210,7 @@ function applyChanges(date: Date, solutionName: string, folderPath: string): voi
 			}
 
 			let shouldReplaceInFile = ['.cs', '.cshtml', '.json', '.csproj', '.js', '.sln'].indexOf(extension) >= 0
-			if (templatePath.includes('/.template-scripts/')) {
+			if (templatePath.includes('.template-scripts/')) {
 				shouldReplaceInFile = false;
 			}
 			let templateFileContents = readFileSync(`${folderPath}/${templatePath}`, { encoding: 'utf8' });

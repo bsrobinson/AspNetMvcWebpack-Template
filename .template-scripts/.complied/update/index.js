@@ -115,18 +115,21 @@ function applyChanges(date, solutionName, folderPath) {
     console.log(`Applying changes in Template`);
     let firstCommitAfterDate = (0, Command_1.git)(`-C ${folderPath} log --pretty='%H' --since='${date.toISOString()}' --reverse | head -1`, true);
     let diff = parseGitDiff((0, Command_1.git)(`-C ${folderPath} diff ${firstCommitAfterDate.trim()}^..`));
-    if (diff.files.find(f => !isRenamedFile(f) && f.path == './.template-scripts/update/index.ts') != null) {
+    if (diff.files.find(f => !isRenamedFile(f) && (f.path == '.template-scripts/update/index.ts' || f.path == '.template-scripts/.complied/update/index.js')) != null) {
         let templateFileContents = (0, fs_1.readFileSync)(`${folderPath}/.template-scripts/update/index.ts`, { encoding: 'utf8' });
+        let compliedTemplateFileContents = (0, fs_1.readFileSync)(`${folderPath}/.template-scripts/.complied/update/index.js`, { encoding: 'utf8' });
         let solutionFileContents = (0, fs_1.readFileSync)((0, path_1.join)(process.cwd(), `./.template-scripts/update/index.ts`), { encoding: 'utf8' });
-        if (templateFileContents != solutionFileContents) {
+        let compliedSolutionFileContents = (0, fs_1.readFileSync)((0, path_1.join)(process.cwd(), `./.template-scripts/.complied/update/index.js`), { encoding: 'utf8' });
+        if (templateFileContents != solutionFileContents || compliedTemplateFileContents != compliedSolutionFileContents) {
             (0, fs_1.writeFileSync)('./.template-scripts/update/index.ts', templateFileContents, { encoding: 'utf8' });
+            (0, fs_1.writeFileSync)('./.template-scripts/.complied/update/index.js', compliedTemplateFileContents, { encoding: 'utf8' });
             console.log(`\nUpdate Template script has been updated.`);
             console.log(`Commit that change and run again.\n`);
             deleteTempFolder(folderPath);
             process.exit();
         }
     }
-    let filesToIgnore = ['.template-scripts/update/index.ts', 'README.md'];
+    let filesToIgnore = ['.template-scripts/update/index.ts', '.template-scripts/.complied/update/index.js', 'README.md'];
     diff.files.filter(f => !isRenamedFile(f) && !filesToIgnore.includes(f.path)).forEach(file => {
         let templatePath = isRenamedFile(file) ? file.pathAfter : file.path;
         let solutionPath = (0, path_1.join)(process.cwd(), (isRenamedFile(file) ? file.pathBefore : file.path).replace(/Template/g, `${solutionName}`));
@@ -152,7 +155,7 @@ function applyChanges(date, solutionName, folderPath) {
                 });
             }
             let shouldReplaceInFile = ['.cs', '.cshtml', '.json', '.csproj', '.js', '.sln'].indexOf(extension) >= 0;
-            if (templatePath.includes('/.template-scripts/')) {
+            if (templatePath.includes('.template-scripts/')) {
                 shouldReplaceInFile = false;
             }
             let templateFileContents = (0, fs_1.readFileSync)(`${folderPath}/${templatePath}`, { encoding: 'utf8' });
