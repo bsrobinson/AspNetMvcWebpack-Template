@@ -1,0 +1,41 @@
+name: Publish Template Workflow
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "Template/**"
+      - "Template.Library/**"
+      - ".github/workflows/publish-workflow.yml"
+jobs:
+  deploy:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 7.0.x
+
+      - name: Setup npm
+        run: npm install
+
+      - name: Publish to Folder
+        run: dotnet publish Template -c Release
+
+      - name: Copy Secrets
+        run: 'echo "$SITE_SECRETS" > Template/bin/Release/net7.0/publish/secrets.json'
+        env:
+          SITE_SECRETS: ${{ secrets.SITE_SECRETS }}
+    
+      - name: 'Deploy to Azure WebApp'
+        uses: azure/webapps-deploy@v2
+        with: 
+          app-name: 'com-wckdrzr'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE  }}
+          package: 'Template/bin/Release/net7.0/publish/'

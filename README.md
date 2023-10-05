@@ -215,10 +215,6 @@ The local page javascript that is injected into the page is slightly more compli
 
 **If you edit the `_Layout.cshtml` file**, adding lines above `@Html.Raw(embededJs)` (pushing it down the page); you will need to update the `embededJsMapOffset` offset value in the `./template-scripts/config.json` file.
 
-```javascript
-
-```
-
 #### Window Resizes
 
 Some designs require element sizing based on the window size; and resizing if the window size changes.  In `Site.ts` you will see a `windowResize()` function, this will be called on load and whenever the window is resized; put your resizing logic in that function.  It will check for and call (if found) `windowResize()` on the page; implement this if you have page specific elements that need to be sized.
@@ -290,6 +286,8 @@ The template is ready to connect to MySql, simply:
 ## Publishing the Application
 
 When publishing (via `dotnet publish`), webpack will be run in production mode which will minify the javascript and css, and remove map files and debugger statements.
+
+There are GitHub publish scripts in the `./.github/-workflows` folder (currently only for Azure) *note the `-` before `workflows` to prevent this running until you are ready*.  This may be your preferred way to publish, but if you prefer manual publishing, or for occasional use; read on:
 
 A publish script is provided to package the published applications and upload the files to your server.  The script currently only supports publish to [Azure Web App](https://azure.microsoft.com/en-gb/products/app-service/web); other services can be added (see `./.template-scripts/publish/`).
 
