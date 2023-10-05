@@ -206,7 +206,7 @@ function applyChanges(date: Date, solutionName: string, folderPath: string): voi
 			}
 
 			let shouldReplaceInFile = ['.cs', '.cshtml', '.json', '.csproj', '.js', '.sln'].indexOf(extension) >= 0
-			if (folderPath.includes('/.template-scripts/')) {
+			if (templatePath.includes('/.template-scripts/')) {
 				shouldReplaceInFile = false;
 			}
 			let templateFileContents = readFileSync(`${folderPath}/${templatePath}`, { encoding: 'utf8' });

@@ -152,7 +152,7 @@ function applyChanges(date, solutionName, folderPath) {
                 });
             }
             let shouldReplaceInFile = ['.cs', '.cshtml', '.json', '.csproj', '.js', '.sln'].indexOf(extension) >= 0;
-            if (folderPath.includes('/.template-scripts/')) {
+            if (templatePath.includes('/.template-scripts/')) {
                 shouldReplaceInFile = false;
             }
             let templateFileContents = (0, fs_1.readFileSync)(`${folderPath}/${templatePath}`, { encoding: 'utf8' });
