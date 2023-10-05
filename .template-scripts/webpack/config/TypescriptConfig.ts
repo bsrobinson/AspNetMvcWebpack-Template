@@ -16,7 +16,7 @@ export function TypescriptConfig(paths: Paths): Configuration {
 
         entry: () => {
             let obj: EntryObject = {
-                scripts: { import: `${paths.projectRoot}/Scripts/Site.ts`, library: { name: paths.projectName, type: 'window' }, filename: 'Site.js' },
+                scripts: { import: `${paths.projectRoot}/Scripts/Site.ts`, library: { name: paths.projectName.replace('.', ''), type: 'window' }, filename: 'Site.js' },
             };
             glob.sync(`${paths.projectRoot}/Views/**/*.ts`).forEach(path => {
                 let file = path.slice(paths.projectName.length + 7);
