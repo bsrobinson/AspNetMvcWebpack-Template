@@ -266,7 +266,7 @@ To reference the **images from cshtml**, or other locations, paths should start 
 
 The template is ready to connect to MySql, simply:
 
-- Add a new file in the project root (alongside `appsettings.json`) called `secrets.json` and add your connection string into that file:
+- Add a new file in the solution root called `secrets.json` and add your connection string into that file:
   
   ```json
   {
@@ -276,7 +276,9 @@ The template is ready to connect to MySql, simply:
   }
   ```
   
-  *secrets.json is included in the .gitignore file, so will not be checked in, and can safely be used for other passwords and access tokens.* 
+  Note; the secrets file lives in the root of your solution (alongside the `.sln` file) to make it available to all projects in the solution, as they are likely to share the same resources (e.g. database).  When a project is published, using the provided publish scripts; it will be copied to the project root and will work from there (see the code in `Program.cs`).
+  
+  *`secrets.json` is included in the `.gitignore` file, so will not be checked in, and can safely be used for other passwords and access tokens.* 
 
 - Add the database context to your controllers; in the existing `HomeController.cs` file, you will find the code commented out ready to use.  Uncomment lines 14, 19 and 24.
 
