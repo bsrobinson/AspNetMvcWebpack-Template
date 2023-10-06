@@ -1,7 +1,7 @@
 ﻿import { execSync, spawn } from 'child_process';
 
-export function getJsonFromCommand<T>(command: string, throwError = true): T | null {
-	let response = executeCommand(command, throwError);
+export function getJsonFromCommand<T>(command: string): T | null {
+	let response = executeCommand(command, false);
 	try {
 		return JSON.parse(response) as T;
 	}

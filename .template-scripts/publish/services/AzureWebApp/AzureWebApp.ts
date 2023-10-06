@@ -52,6 +52,8 @@ export class AzureWebApp implements IDeployment {
 			console.log('Login to Azure in your browser');
 			executeCommand('az login');
 
+			console.log('\nLogin successful, publishing...');
+
 		}
 	}
 }

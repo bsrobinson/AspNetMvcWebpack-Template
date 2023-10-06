@@ -54,7 +54,7 @@ function replaceInPublish(publishConfig: PublishConfig, paths: Paths) {
 	(publishConfig.replacements || []).forEach(replacement => {
 		let filePath = `${paths.publishFolder}${replacement.file}`
 		if (existsSync(filePath)) {
-			let fileContents = readFileSync(join(__dirname, filePath), { encoding: 'utf8' });
+			let fileContents = readFileSync(join(process.cwd(), filePath), { encoding: 'utf8' });
 			fileContents = fileContents.replace(new RegExp(replacement.replace, 'g'), replacement.with);
 			writeFileSync(filePath, fileContents, { encoding: 'utf8' });
 		}
