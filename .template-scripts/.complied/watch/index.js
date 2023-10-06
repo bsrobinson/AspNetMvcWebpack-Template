@@ -16,7 +16,7 @@ if (!(0, fs_1.existsSync)(process.cwd() + '/node_modules')) {
         (0, Command_1.executeCommand)(`dotnet clean ${path.csprojFilePath}`);
     });
     paths.forEach(path => {
-        (0, Command_1.spawnCommand)('dotnet', ['watch', `--non-interactive --project=${path.projectName}`]);
+        (0, Command_1.spawnCommand)('dotnet', ['watch', `--non-interactive`, `--project=${path.projectName}`]);
         (0, Command_1.spawnCommand)('npx', ['webpack', '--watch', '--env', `project=${path.projectName}`]);
     });
 });

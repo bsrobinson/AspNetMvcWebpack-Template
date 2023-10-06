@@ -19,7 +19,7 @@ SelectProject(paths => {
 	});
 
 	paths.forEach(path => {
-		spawnCommand('dotnet', ['watch', `--non-interactive --project=${path.projectName}`]);
+		spawnCommand('dotnet', ['watch', `--non-interactive`, `--project=${path.projectName}`]);
 		spawnCommand('npx', ['webpack', '--watch', '--env', `project=${path.projectName}`]);
 	});
 	
