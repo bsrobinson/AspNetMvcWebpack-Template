@@ -41,6 +41,7 @@ class AzureWebApp {
         if (!(0, Command_1.getJsonFromCommand)('az account show')) {
             console.log('Login to Azure in your browser');
             (0, Command_1.executeCommand)('az login');
+            console.log('\nLogin successful, publishing...');
         }
     }
 }

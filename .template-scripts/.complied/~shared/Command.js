@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.spawnCommand = exports.executeCommand = exports.git = exports.getJsonFromCommand = void 0;
 const child_process_1 = require("child_process");
-function getJsonFromCommand(command, throwError = true) {
-    let response = executeCommand(command, throwError);
+function getJsonFromCommand(command) {
+    let response = executeCommand(command, false);
     try {
         return JSON.parse(response);
     }

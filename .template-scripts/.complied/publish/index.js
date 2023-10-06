@@ -39,7 +39,7 @@ function replaceInPublish(publishConfig, paths) {
     (publishConfig.replacements || []).forEach(replacement => {
         let filePath = `${paths.publishFolder}${replacement.file}`;
         if ((0, fs_1.existsSync)(filePath)) {
-            let fileContents = (0, fs_1.readFileSync)((0, path_1.join)(__dirname, filePath), { encoding: 'utf8' });
+            let fileContents = (0, fs_1.readFileSync)((0, path_1.join)(process.cwd(), filePath), { encoding: 'utf8' });
             fileContents = fileContents.replace(new RegExp(replacement.replace, 'g'), replacement.with);
             (0, fs_1.writeFileSync)(filePath, fileContents, { encoding: 'utf8' });
         }
